@@ -14,7 +14,7 @@ Tracker.ForceUpdateData = {
 	},
 }
 
--- Dual-purpose enum to determine the status of the tracked data loaded on startup and refernece the relevant Resource key
+-- Dual-purpose enum to determine the status of the tracked data loaded on startup and reference the relevant Resource key
 Tracker.LoadStatusKeys = {
 	NEW_GAME = "TrackedDataMsgNewGame",
 	LOAD_SUCCESS = "TrackedDataMsgLoadSuccess",

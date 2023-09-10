@@ -91,8 +91,6 @@ function Input.checkForInput()
 			Input.checkJoypadInput()
 		end
 
-		CustomCode.inputCheckBizhawk()
-
 		-- If instructed to resume input, do so after 1 frame of input checks, to prevent "resume into immediate input trigger"
 		if Input.resumeMouse then
 			Input.resumeMouse = false
@@ -133,8 +131,6 @@ function Input.checkJoypadInput()
 	local cycleStatBtn = Options.CONTROLS["Cycle through stats"] or ""
 	local markStatBtn = Options.CONTROLS["Mark stat"] or ""
 	local quickloadBtns = Options.CONTROLS["Load next seed"] or ""
-
-	CustomCode.inputCheckMGBA()
 
 	if joypad[toggleViewBtn] and not Input.prevJoypadInput[toggleViewBtn] then
 		Input.togglePokemonViewed()
@@ -229,8 +225,6 @@ function Input.checkMouseInput(xmouse, ymouse)
 	end
 	if UpdateScreen.showNotes then
 		Input.checkButtonsClicked(xmouse, ymouse, UpdateScreen.Pager.Buttons)
-	elseif LogOverlay.isDisplayed then
-		LogOverlay.checkInput(xmouse, ymouse)
 	end
 end
 
@@ -262,7 +256,6 @@ function Input.checkButtonsClicked(xmouse, ymouse, buttons)
 	end
 	-- Finally, click all buttons at once
 	for _, button in pairs(buttonQueue) do
-		CustomCode.onButtonClicked(button)
 		button:onClick()
 	end
 end

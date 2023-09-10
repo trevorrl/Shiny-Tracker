@@ -9,15 +9,6 @@ ExtrasScreen = {
 -- Holds all the buttons for the screen
 -- Buttons are created in CreateButtons()
 ExtrasScreen.Buttons = {
-	ViewLogFile = {
-		type = Constants.ButtonTypes.ICON_BORDER,
-		image = Constants.PixelImages.MAGNIFYING_GLASS,
-		getText = function(self) return Resources.ExtrasScreen.ButtonViewLogs end,
-		box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 4, Constants.SCREEN.MARGIN + 14, 52, 16 },
-		onClick = function(self)
-			Program.changeScreenView(ViewLogWarningScreen)
-		end,
-	},
 	TimeMachine = {
 		type = Constants.ButtonTypes.ICON_BORDER,
 		getText = function(self) return Resources.ExtrasScreen.ButtonTimeMachine end,

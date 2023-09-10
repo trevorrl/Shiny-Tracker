@@ -336,7 +336,6 @@ function Theme.setNextMoveLevelHighlight(forced)
 
 	-- Update any buttons with new color
 	TrackerScreen.Buttons.MovesHistory.textColor = colorKey
-	LogOverlay.refreshButtons()
 end
 
 -- Attempts to fill in missing theme code information for old theme codes

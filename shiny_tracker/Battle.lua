@@ -95,7 +95,6 @@ function Battle.update()
 	end
 	if Program.Frames.lowAccuracyUpdate == 0 then
 		Battle.updateLowAccuracy()
-		CustomCode.afterBattleDataUpdate()
 	end
 end
 
@@ -122,7 +121,6 @@ function Battle.updateBattleStatus()
 		Battle.endCurrentBattle()
 	end
 	if GameOverScreen.shouldDisplay(lastBattleStatus) then -- should occur exactly once per lost battle
-		LogOverlay.isGameOver = true
 		Program.GameTimer:pause()
 		GameOverScreen.randomizeAnnouncerQuote()
 		GameOverScreen.nextTeamPokemon()
@@ -670,8 +668,6 @@ function Battle.beginNewBattle()
 	if not Main.IsOnBizhawk() then
 		MGBA.Screens.LookupPokemon.manuallySet = false
 	end
-
-	CustomCode.afterBattleBegins()
 end
 
 function Battle.endCurrentBattle()
@@ -750,8 +746,6 @@ function Battle.endCurrentBattle()
 	-- Delay drawing the return to viewing your pokemon screen
 	Program.Frames.hideEnemy = Utils.inlineIf(Battle.isWildEncounter, 70, 150)
 	Program.Frames.saveData = Utils.inlineIf(Battle.isWildEncounter, 70, 150) -- Save data after every battle
-
-	CustomCode.afterBattleEnds()
 end
 
 function Battle.resetBattle()

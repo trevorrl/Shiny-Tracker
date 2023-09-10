@@ -34,8 +34,6 @@ GameOverScreen.Buttons = {
 			if Battle.defeatedSteven then
 				Battle.defeatedSteven = false
 			end
-			LogOverlay.isGameOver = false
-			LogOverlay.isDisplayed = false
 			Program.GameTimer:unpause()
 			GameOverScreen.refreshButtons()
 			GameOverScreen.Buttons.SaveGameFiles:reset()
@@ -65,7 +63,6 @@ GameOverScreen.Buttons = {
 				self.confirmAction = true
 				Program.redraw(true)
 			else
-				LogOverlay.isDisplayed = false
 				Program.GameTimer:unpause()
 				GameOverScreen.refreshButtons()
 				GameOverScreen.Buttons.SaveGameFiles:reset()
@@ -106,23 +103,7 @@ GameOverScreen.Buttons = {
 			end
 			Program.redraw(true)
 		end,
-	},
-	ViewLogFile = {
-		type = Constants.ButtonTypes.ICON_BORDER,
-		image = Constants.PixelImages.MAGNIFYING_GLASS,
-		getText = function(self)
-			if Options["Generate ROM each time"] or Options["Use premade ROMs"] then
-				return Resources.GameOverScreen.ButtonInspectLogFile
-			else
-				return Resources.GameOverScreen.ButtonOpenLogFile
-			end
-		end,
-		box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 14, Constants.SCREEN.MARGIN + 129, 112, 16 },
-		isVisible = function(self) return true end,
-		onClick = function(self)
-			LogOverlay.viewLogFile(FileManager.PostFixes.AUTORANDOMIZED)
-		end,
-	},
+	}
 }
 
 function GameOverScreen.initialize()

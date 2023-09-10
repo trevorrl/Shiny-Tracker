@@ -117,7 +117,7 @@ Program.GameTimer = {
 	end,
 	checkInput = function(self, xmouse, ymouse)
 		-- Don't pause if either game screen overlay is covering the screen
-		if not Options["Display play time"] or LogOverlay.isDisplayed or UpdateScreen.showNotes then return end
+		if not Options["Display play time"] or UpdateScreen.showNotes then return end
 		local clicked = Input.isMouseInArea(xmouse, ymouse, self.box.x, self.box.y, self.box.width, self.box.height)
 		if clicked then
 			if self.isPaused then
@@ -159,7 +159,7 @@ Program.ActiveRepel = {
 	duration = 100,
 	shouldDisplay = function(self)
 		local enabledAndAllowed = Options["Display repel usage"] and Program.ActiveRepel.inUse and Program.isValidMapLocation()
-		local hasConflict = Battle.inBattle or Battle.battleStarting or Program.inStartMenu or GameOverScreen.isDisplayed or LogOverlay.isDisplayed
+		local hasConflict = Battle.inBattle or Battle.battleStarting or Program.inStartMenu or GameOverScreen.isDisplayed
 		local inHallOfFame = Program.GameData.mapId ~= nil and RouteData.Locations.IsInHallOfFame[Program.GameData.mapId]
 		return enabledAndAllowed and not hasConflict and not inHallOfFame
 	end,
@@ -177,7 +177,7 @@ Program.Pedometer = {
 	getCurrentStepcount = function(self) return math.max(self.totalSteps - self.lastResetCount, 0) end,
 	isInUse = function(self)
 		local enabledAndAllowed = Options["Display pedometer"] and Program.isValidMapLocation()
-		local hasConflict = Battle.inBattle or Battle.battleStarting or GameOverScreen.isDisplayed or LogOverlay.isDisplayed
+		local hasConflict = Battle.inBattle or Battle.battleStarting or GameOverScreen.isDisplayed
 		return enabledAndAllowed and not hasConflict
 	end,
 }
@@ -242,7 +242,6 @@ function Program.mainLoop()
 	Input.checkForInput()
 	Program.update()
 	Battle.update()
-	CustomCode.afterEachFrame()
 	Program.redraw(false)
 	Program.stepFrames() -- TODO: Really want a better way to handle this
 end
@@ -268,8 +267,6 @@ function Program.redraw(forced)
 		-- These screens occupy the main game screen space, overlayed on top, and need their own check; order matters
 		if UpdateScreen.showNotes then
 			UpdateScreen.drawReleaseNotesOverlay()
-		elseif LogOverlay.isDisplayed then
-			LogOverlay.drawScreen()
 		end
 
 		if Program.currentScreen ~= nil and type(Program.currentScreen.drawScreen) == "function" then
@@ -283,7 +280,6 @@ function Program.redraw(forced)
 		MGBA.ScreenUtils.updateTextBuffers()
 	end
 
-	CustomCode.afterRedraw()
 	SpriteData.cleanupActiveIcons()
 end
 
@@ -428,10 +424,6 @@ function Program.update()
 		if Options["Auto save tracked game data"] and Tracker.getPokemon(1, true) ~= nil then
 			Tracker.saveData()
 		end
-	end
-
-	if Program.Frames.lowAccuracyUpdate == 0 then
-		CustomCode.afterProgramDataUpdate()
 	end
 end
 

@@ -5,14 +5,11 @@ FileManager.slash = package.config:sub(1,1) or "\\"
 
 FileManager.Folders = {
 	TrackerCode = "shiny_tracker",
-	Custom = "extensions",
-	Quickload = "quickload",
 	SavedGames = "saved_games", -- needs to be created first to be used
 	BackupSaves = "backup_saves", -- needs to be created first to be used
 	DataCode = "data",
 	ScreensCode = "screens",
 	Languages = "Languages",
-	RandomizerSettings = "RandomizerSettings",
 	Images = "images",
 	Trainers = "trainers",
 	TrainersPortraits = "trainerPortraits",
@@ -24,7 +21,6 @@ FileManager.Folders = {
 FileManager.Files = {
 	SETTINGS = "Settings.ini",
 	THEME_PRESETS = "ThemePresets.txt",
-	RANDOMIZER_ERROR_LOG = "RandomizerErrorLog.txt",
 	UPDATE_OR_INSTALL = "UpdateOrInstall.lua",
 	OSEXECUTE_OUTPUT = FileManager.Folders.TrackerCode .. FileManager.slash .. "osexecute-output.txt",
 	ERROR_LOG = FileManager.Folders.TrackerCode .. FileManager.slash .. "errorlog.txt",
@@ -45,15 +41,12 @@ FileManager.Files = {
 
 FileManager.PostFixes = {
 	ATTEMPTS_FILE = "Attempts",
-	AUTORANDOMIZED = "AutoRandomized",
-	PREVIOUSATTEMPT = "PreviousAttempt",
 	AUTOSAVE = "AutoSave",
 	BACKUPSAVE = "BackupSave",
 }
 
 FileManager.Extensions = {
 	GBA_ROM = ".gba",
-	RANDOMIZER_LOGFILE = ".log",
 	TRACKED_DATA = ".tdat",
 	ATTEMPTS = ".txt",
 	ANIMATED_POKEMON = ".gif",
@@ -109,7 +102,6 @@ FileManager.LuaCode = {
 	{ name = "UpdateScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "UpdateScreen.lua", },
 	{ name = "SetupScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "SetupScreen.lua", },
 	{ name = "ExtrasScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "ExtrasScreen.lua", },
-	{ name = "QuickloadScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "QuickloadScreen.lua", },
 	{ name = "GameOptionsScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "GameOptionsScreen.lua", },
 	{ name = "TrackedDataScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "TrackedDataScreen.lua", },
 	{ name = "LanguageScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "LanguageScreen.lua", },
@@ -119,23 +111,8 @@ FileManager.LuaCode = {
 	{ name = "GameOverScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "GameOverScreen.lua", },
 	{ name = "StreamerScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "StreamerScreen.lua", },
 	{ name = "TimeMachineScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "TimeMachineScreen.lua", },
-	{ name = "CustomExtensionsScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "CustomExtensionsScreen.lua", },
-	{ name = "SingleExtensionScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "SingleExtensionScreen.lua", },
-	{ name = "ViewLogWarningScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "ViewLogWarningScreen.lua", },
 	{ name = "CrashRecoveryScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "CrashRecoveryScreen.lua"},
-	{ name = "LogOverlay", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "LogOverlay.lua", },
-	{ name = "LogTabPokemon", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "LogTabPokemon.lua", },
-	{ name = "LogTabPokemonDetails", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "LogTabPokemonDetails.lua", },
-	{ name = "LogTabTrainers", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "LogTabTrainers.lua", },
-	{ name = "LogTabTrainerDetails", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "LogTabTrainerDetails.lua", },
-	{ name = "LogTabRoutes", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "LogTabRoutes.lua", },
-	{ name = "LogTabRouteDetails", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "LogTabRouteDetails.lua", },
-	{ name = "LogTabTMs", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "LogTabTMs.lua", },
-	{ name = "LogTabMisc", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "LogTabMisc.lua", },
 	{ name = "TeamViewArea", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "TeamViewArea.lua", },
-	{ name = "LogSearchScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "LogSearchScreen.lua"},
-	-- Miscellaneous files
-	{ name = "CustomCode", filepath = "CustomCode.lua", },
 }
 
 -- Returns true if a file exists at its absolute file path; false otherwise
@@ -414,15 +391,6 @@ function FileManager.buildSpritePath(animationType, imageName, imageExtension)
 	return FileManager.prependDir(table.concat(listOfPaths, FileManager.slash))
 end
 
--- Returns a properly formatted folder path where custom code files are located
-function FileManager.getCustomFolderPath()
-	local listOfPaths = {
-		FileManager.Folders.Custom,
-		"", -- Necessary to include a trailing slash, helps with appending a filename
-	}
-	return FileManager.prependDir(table.concat(listOfPaths, FileManager.slash))
-end
-
 function FileManager.extractFolderNameFromPath(path)
 	if path == nil or path == "" then return "" end
 
@@ -540,7 +508,7 @@ function FileManager.writeTableToFile(table, filename)
 	end
 end
 
--- 'filepath' is must contain the absolute path to the file
+-- 'filepath' must contain the absolute path to the file
 function FileManager.readTableFromFile(filepath)
 	local tableData = nil
 	local file = io.open(filepath, "r")

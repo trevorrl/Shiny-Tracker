@@ -1,12 +1,12 @@
 name: Feature Request
-description: Use this to suggest new features or changes to the Ironmon Tracker
+description: Use this to suggest new features or changes to the Shiny Tracker
 title: "[Feature Request]: "
 labels: ["Feature Request"]
 body:
   - type: markdown
     attributes:
       value: |
-        Before you submit a feature request, please check our main README about [what is a good fit for the Ironmon Tracker](https://github.com/besteon/Ironmon-Tracker#what-is-a-good-fit-for-the-ironmon-tracker).
+        Before you submit a feature request, please check our main README about [what is a good fit for the Shiny Tracker](https://github.com/trevorrl/Shiny-Tracker#what-is-a-good-fit-for-the-shiny-tracker).
   - type: textarea
     id: description
     attributes:

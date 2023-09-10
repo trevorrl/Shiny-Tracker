@@ -375,7 +375,7 @@ function Main.CheckForVersionUpdate(forcedCheck)
 	Main.SaveSettings(true)
 end
 
--- If not release notes have been retrieved yet (update check was skipped), then get those and parse them
+-- If no release notes have been retrieved yet (update check was skipped), then get those and parse them
 -- Searches a response body for the "# Release Notes" area, and gets a list of changes
 function Main.updateReleaseNotes(response)
 	if not response then
@@ -453,29 +453,7 @@ function Main.isOnLatestVersion(versionToCheck)
 end
 
 function Main.GetAttemptsFile()
-	-- If temp quickload files are available, use those instead of spending resources to look them up
-	local quickloadFiles = Main.tempQuickloadFiles
-
-	-- First, try using a filename based on the Quickload settings file name
-	-- The case when using Quickload method: auto-generate a ROM
-	local attemptsFileName, attemptsFilePath, settingsFileName
-	if Options.FILES["Settings File"] ~= nil and Options.FILES["Settings File"] ~= "" then
-		settingsFileName = FileManager.extractFileNameFromPath(Options.FILES["Settings File"])
-	else
-		quickloadFiles = quickloadFiles or Main.GetQuickloadFiles()
-		if #quickloadFiles.settingsList > 0 then
-			settingsFileName = FileManager.extractFileNameFromPath(quickloadFiles.settingsList[1])
-		end
-	end
-	if settingsFileName ~= nil then
-		attemptsFileName = string.format("%s %s%s", settingsFileName, FileManager.PostFixes.ATTEMPTS_FILE, FileManager.Extensions.ATTEMPTS)
-		attemptsFilePath = FileManager.getPathIfExists(attemptsFileName)
-
-		-- Return early if an attemptsFilePath has been found
-		if attemptsFilePath ~= nil then
-			return attemptsFilePath
-		end
-	end
+	local attemptsFileName, attemptsFilePath
 
 	-- Otherwise, check if an attempts file exists based on the ROM file name (w/o numbers)
 	-- The case when using Quickload method: premade ROMS
@@ -485,12 +463,10 @@ function Main.GetAttemptsFile()
 	if Main.IsOnBizhawk() then
 		quickloadRomName = GameSettings.getRomName() or ""
 	else
-		quickloadFiles = quickloadFiles or Main.GetQuickloadFiles()
-		quickloadRomName = quickloadFiles.romList[1] or ""
+		quickloadRomName = ""
 	end
 
 	local romprefix = string.match(quickloadRomName, '[^0-9]+') or "" -- remove numbers
-	romprefix = romprefix:gsub(" " .. FileManager.PostFixes.AUTORANDOMIZED, "") -- remove quickload post-fix
 
 	attemptsFileName = string.format("%s %s%s", romprefix, FileManager.PostFixes.ATTEMPTS_FILE, FileManager.Extensions.ATTEMPTS)
 	attemptsFilePath = FileManager.getPathIfExists(attemptsFileName)

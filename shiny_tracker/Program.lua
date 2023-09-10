@@ -659,6 +659,14 @@ function Program.readNewPokemon(startAddress, personality)
 	local def_and_speed = Memory.readdword(startAddress + 92)
 	local spatk_and_spdef = Memory.readdword(startAddress + 96)
 
+	-- Determine shininess
+	local p1 = math.floor(personality / 65536)
+	local p2 = math.floor(personality % 65536)
+	local trainerID = Utils.getbits(otid, 0, 16)
+	local secretID = Utils.getbits(otid, 16, 16)
+	local shininess = Utils.bit_xor(Utils.bit_xor(Utils.bit_xor(trainerID, secretID), p1), p2)
+	local isMonShiny = shininess < 8
+
 	return {
 		personality = personality,
 		nickname = nickname,
@@ -689,9 +697,11 @@ function Program.readNewPokemon(startAddress, personality)
 			{ id = Utils.getbits(attack2, 0, 16), level = 1, pp = Utils.getbits(attack3, 16, 8) },
 			{ id = Utils.getbits(attack2, 16, 16), level = 1, pp = Utils.getbits(attack3, 24, 8) },
 		},
+		secretID = Utils.getbits(otid, 16, 16),
+		shininess = shininess,
+		isMonShiny = isMonShiny,
 
 		-- Unused data that can be added back in later
-		-- secretID = Utils.getbits(otid, 16, 16), -- Unused
 		-- pokerus = Utils.getbits(misc1, 0, 8), -- Unused
 		-- iv = misc2,
 		-- ev1 = effort1,

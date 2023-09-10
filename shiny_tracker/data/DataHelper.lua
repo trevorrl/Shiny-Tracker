@@ -136,6 +136,7 @@ function DataHelper.buildTrackerScreenDisplay(forceView)
 	data.p.totalExp = viewedPokemon.totalExp or 100
 	data.p.friendship = viewedPokemon.friendship or 70 -- Current friendship value; 70 is default for most Pokémon
 	data.p.friendshipBase = viewedPokemon.friendshipBase or 70 -- The starting friendship value of the Pokémon
+	data.p.isMonShiny = viewedPokemon.isMonShiny
 
 	-- Add: Stats, Stages, and Nature
 	data.p.nature = viewedPokemon.nature

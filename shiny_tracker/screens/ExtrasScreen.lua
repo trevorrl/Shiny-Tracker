@@ -105,7 +105,7 @@ function ExtrasScreen.createButtons()
 	}
 
 	local startX = Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 5
-	local startY = ExtrasScreen.Buttons.ViewLogFile.box[2] + ExtrasScreen.Buttons.ViewLogFile.box[4] + 5
+	local startY = Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 5
 	local linespacing = Constants.SCREEN.LINESPACING + 1
 
 	for _, optionTuple in ipairs(optionKeyMap) do

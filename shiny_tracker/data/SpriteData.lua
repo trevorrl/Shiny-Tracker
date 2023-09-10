@@ -151,7 +151,7 @@ function SpriteData.updateActiveIcons()
 	local joypad = Input.getJoypadInputFormatted()
 	local canWalk = joypad["Left"] or joypad["Right"] or joypad["Up"] or joypad["Down"]
 	local walkableAllowed = SpriteData.screenCanControlWalking(Program.currentScreen)
-		and not (Battle.inBattle or Battle.battleStarting or Program.inStartMenu or LogOverlay.isGameOver or LogOverlay.isDisplayed)
+		and not (Battle.inBattle or Battle.battleStarting or Program.inStartMenu)
 
 	for _, activeIcon in pairs(SpriteData.ActiveIcons or {}) do
 		-- Check if the walk/idle animation needs to be updated, reusing frame info
@@ -170,7 +170,7 @@ function SpriteData.updateActiveIcons()
 end
 
 function SpriteData.checkForFaintingStatus(pokemonID, isZeroHP)
-	if not SpriteData.canDrawPokemonIcon(pokemonID) or LogOverlay.isDisplayed or SpriteData.spritesAfkSleeping then
+	if not SpriteData.canDrawPokemonIcon(pokemonID) or SpriteData.spritesAfkSleeping then
 		return
 	end
 	local activeIcon = SpriteData.ActiveIcons[pokemonID]
@@ -185,7 +185,7 @@ function SpriteData.checkForFaintingStatus(pokemonID, isZeroHP)
 end
 
 function SpriteData.checkForSleepingStatus(pokemonID, status)
-	if not SpriteData.canDrawPokemonIcon(pokemonID) or LogOverlay.isDisplayed or SpriteData.spritesAfkSleeping then
+	if not SpriteData.canDrawPokemonIcon(pokemonID) or SpriteData.spritesAfkSleeping then
 		return
 	end
 	local activeIcon = SpriteData.ActiveIcons[pokemonID]
@@ -201,7 +201,7 @@ function SpriteData.checkForSleepingStatus(pokemonID, status)
 end
 
 function SpriteData.checkForIdleSleeping(idleSeconds)
-	if not SpriteData.animationAllowed() or LogOverlay.isDisplayed then
+	if not SpriteData.animationAllowed() then
 		return
 	end
 	idleSeconds = idleSeconds or 0

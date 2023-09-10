@@ -16,10 +16,6 @@ TrackerScreen.Buttons = {
 			if not PokemonData.isValid(pokemon.pokemonID) then
 				return
 			end
-			if Options["Open Book Play Mode"] then
-				LogOverlay.Windower:changeTab(LogTabPokemon)
-				LogOverlay.Windower:changeTab(LogTabPokemonDetails, 1, 1, pokemon.pokemonID)
-			end
 			InfoScreen.changeScreenView(InfoScreen.Screens.POKEMON_INFO, pokemon.pokemonID)
 		end
 	},
@@ -123,8 +119,6 @@ TrackerScreen.Buttons = {
 			if not PokemonData.isValid(pokemon.pokemonID) then
 				return
 			end
-			LogOverlay.Windower:changeTab(LogTabPokemon)
-			LogOverlay.Windower:changeTab(LogTabPokemonDetails, 1, 1, pokemon.pokemonID)
 			InfoScreen.changeScreenView(InfoScreen.Screens.POKEMON_INFO, pokemon.pokemonID)
 		end,
 	},

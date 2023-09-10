@@ -101,7 +101,6 @@ function LanguageScreen.createLanguageButtons()
 			onClick = function()
 				Resources.changeLanguageSetting(language)
 				LanguageScreen.refreshButtons()
-				LogOverlay.rebuildScreen()
 				Program.redraw(true)
 			end,
 		}

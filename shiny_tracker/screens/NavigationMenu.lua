@@ -41,21 +41,6 @@ NavigationMenu.Buttons = {
 		isVisible = function() return not NavigationMenu.showCredits end,
 		onClick = function() Program.changeScreenView(GameOptionsScreen) end
 	},
-	QuickloadSettings = {
-		getText = function(self) return Resources.NavigationMenu.ButtonQuickload end,
-		image = Constants.PixelImages.CLOCK,
-		index = 4,
-		isVisible = function() return not NavigationMenu.showCredits end,
-		updateSelf = function (self)
-			if Options["Use premade ROMs"] or Options["Generate ROM each time"] then
-				self.textColor = NavigationMenu.Colors.textColor
-			else
-				-- If neither quickload option is enabled, then highlight it to draw user's attention
-				self.textColor = "Intermediate text"
-			end
-		end,
-		onClick = function() Program.changeScreenView(QuickloadScreen) end
-	},
 	ThemeCustomization = {
 		getText = function(self) return Resources.NavigationMenu.ButtonTheme end,
 		image = Constants.PixelImages.SPARKLES,
@@ -107,16 +92,6 @@ NavigationMenu.Buttons = {
 		index = 8,
 		isVisible = function() return not NavigationMenu.showCredits end,
 		onClick = function() Program.changeScreenView(StreamerScreen) end
-	},
-	Extensions = {
-		getText = function(self) return Resources.NavigationMenu.ButtonExtensions end,
-		image = Constants.PixelImages.EXTENSIONS,
-		index = 9,
-		isVisible = function() return not NavigationMenu.showCredits end,
-		onClick = function()
-			CustomExtensionsScreen.buildOutPagedButtons()
-			Program.changeScreenView(CustomExtensionsScreen)
-		end
 	},
 	MirageButton = {
 		getText = function(self)

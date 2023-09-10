@@ -4,19 +4,19 @@
 -- Lots of redundancy here as this file is meant to work as a standalone or as part of the full Tracker script
 UpdateOrInstall = {
 	thisFileName = "UpdateOrInstall.lua",
-	trackerFileName = "Ironmon-Tracker.lua",
+	trackerFileName = "Shiny-Tracker.lua",
 	slash = package.config:sub(1,1) or "\\", -- Windows is \ and Linux is /
-	TAR_URL = "https://github.com/besteon/Ironmon-Tracker/archive/main.tar.gz",
-	archiveName = "Ironmon-Tracker-main.tar.gz",
-	archiveFolder = "Ironmon-Tracker-main",
+	TAR_URL = "https://github.com/trevorrl/Shiny-Tracker/archive/main.tar.gz",
+	archiveName = "Shiny-Tracker-main.tar.gz",
+	archiveFolder = "Shiny-Tracker-main",
 }
 
 -- Beta testers can have this enabled to receive live updates from "beta-test" branch
 UpdateOrInstall.Dev = {
 	enabled = false, -- Verify this remains "false" for main release
-	TAR_URL = "https://github.com/besteon/Ironmon-Tracker/archive/refs/heads/beta-test.tar.gz",
-	archiveName = "Ironmon-Tracker-beta-test.tar.gz",
-	archiveFolder = "Ironmon-Tracker-beta-test",
+	TAR_URL = "https://github.com/trevorrl/Shiny-Tracker/archive/refs/heads/beta-test.tar.gz",
+	archiveName = "Shiny-Tracker-beta-test.tar.gz",
+	archiveFolder = "Shiny-Tracker-beta-test",
 }
 
 UpdateOrInstall.Messages = {
@@ -36,7 +36,7 @@ UpdateOrInstall.Messages = {
 -- Allows for loading just this single file manually to try an auto-update again
 function UpdateOrInstall.start()
 	-- Do NOT perform the standalone update if this file is loaded alongside the Tracker
-	if IronmonTracker ~= nil then
+	if ShinyTracker ~= nil then
 		return
 	end
 
@@ -57,33 +57,33 @@ function UpdateOrInstall.getArchiveFolder()
 end
 
 function UpdateOrInstall.setupEmulatorSpecifics()
-	if IronmonTracker == nil then -- redundant safety check
-		IronmonTracker = {}
+	if ShinyTracker == nil then -- redundant safety check
+		ShinyTracker = {}
 	end
 
 	-- This function doesn't exist in Bizhawk, only mGBA
-	IronmonTracker.isOnBizhawk = (console.createBuffer == nil)
+	ShinyTracker.isOnBizhawk = (console.createBuffer == nil)
 
 	-- Get the current working directory of the Tracker script, needed for mGBA
-	if IronmonTracker.workingDir == nil then -- required to prevent overwrite in rare cases
+	if ShinyTracker.workingDir == nil then -- required to prevent overwrite in rare cases
 		local pathLookup = debug.getinfo(2, "S").source:sub(2)
-		IronmonTracker.workingDir = pathLookup:match("(.*[/\\])") or ""
+		ShinyTracker.workingDir = pathLookup:match("(.*[/\\])") or ""
 
 		-- Format path for OS
 		if UpdateOrInstall.slash == "/" then
-			IronmonTracker.workingDir = IronmonTracker.workingDir:gsub("\\", "/")
+			ShinyTracker.workingDir = ShinyTracker.workingDir:gsub("\\", "/")
 		else
-			IronmonTracker.workingDir = IronmonTracker.workingDir:gsub("/", "\\")
+			ShinyTracker.workingDir = ShinyTracker.workingDir:gsub("/", "\\")
 		end
 
 		-- Add trailing slash if missing
-		if IronmonTracker.workingDir ~= "" and IronmonTracker.workingDir:sub(-1) ~= UpdateOrInstall.slash then
-			IronmonTracker.workingDir = IronmonTracker.workingDir .. UpdateOrInstall.slash
+		if ShinyTracker.workingDir ~= "" and ShinyTracker.workingDir:sub(-1) ~= UpdateOrInstall.slash then
+			ShinyTracker.workingDir = ShinyTracker.workingDir .. UpdateOrInstall.slash
 		end
 	end
 
 	-- Redefine Lua print function to be compatible with outputting to mGBA's scripting console
-	if IronmonTracker.isOnBizhawk then
+	if ShinyTracker.isOnBizhawk then
 		print = function(...) console.log(...) end
 	else
 		print = function(...) console:log(...) end
@@ -93,7 +93,7 @@ end
 function UpdateOrInstall.popupConfirmationWindow()
 	-- First check if any other tracker files exist to determine if this is a new install (non-functional difference)
 	local confirmationMsg, windowTitle
-	local trackerFile = io.open(IronmonTracker.workingDir .. UpdateOrInstall.trackerFileName, "r")
+	local trackerFile = io.open(ShinyTracker.workingDir .. UpdateOrInstall.trackerFileName, "r")
 	if trackerFile == nil then
 		confirmationMsg = UpdateOrInstall.Messages.confirmFreshInstall
 		windowTitle = "Installer"
@@ -104,9 +104,9 @@ function UpdateOrInstall.popupConfirmationWindow()
 	end
 
 	-- Only Bizhawk allows popup form windows
-	if IronmonTracker.isOnBizhawk then
+	if ShinyTracker.isOnBizhawk then
 		client.pause()
-		local form = forms.newform(340, 120, string.format("Ironmon Tracker %s", windowTitle), function() client.unpause() end)
+		local form = forms.newform(340, 120, string.format("Shiny Tracker %s", windowTitle), function() client.unpause() end)
 		local actualLocation = client.transformPoint(100, 50)
 		forms.setproperty(form, "Left", client.xpos() + actualLocation['x'] )
 		forms.setproperty(form, "Top", client.ypos() + actualLocation['y'] + 64) -- so we are below the ribbon menu
@@ -179,7 +179,7 @@ function UpdateOrInstall.performStandaloneUpdate()
 
 	-- Temporarily removing this, as it can potentiall cause issues when a failed update prevents grabbing the actual latest (maybe two weeks has passed)
 	-- Check if the download was completed and extracted, but the update halted before it was removed
-	-- local updaterFilePath = IronmonTracker.workingDir .. UpdateOrInstall.getArchiveFolder() .. UpdateOrInstall.slash .. UpdateOrInstall.thisFileName
+	-- local updaterFilePath = ShinyTracker.workingDir .. UpdateOrInstall.getArchiveFolder() .. UpdateOrInstall.slash .. UpdateOrInstall.thisFileName
 	-- local file = io.open(updaterFilePath, "r")
 	-- if file ~= nil then
 		-- file:close()
@@ -191,7 +191,7 @@ function UpdateOrInstall.performStandaloneUpdate()
 		end
 	-- end
 
-	releaseFolderPath = releaseFolderPath or (IronmonTracker.workingDir .. UpdateOrInstall.getArchiveFolder())
+	releaseFolderPath = releaseFolderPath or (ShinyTracker.workingDir .. UpdateOrInstall.getArchiveFolder())
 
 	local success = UpdateOrInstall.updateFiles(releaseFolderPath)
 	if success then
@@ -209,8 +209,8 @@ function UpdateOrInstall.downloadAndExtract()
 
 	-- Temp Files/Folders used by batch operations
 	local tarUrl = UpdateOrInstall.getTARURL()
-	local archiveFilePath = IronmonTracker.workingDir .. UpdateOrInstall.getArchiveName()
-	local extractedFolderPath = IronmonTracker.workingDir .. UpdateOrInstall.getArchiveFolder()
+	local archiveFilePath = ShinyTracker.workingDir .. UpdateOrInstall.getArchiveName()
+	local extractedFolderPath = ShinyTracker.workingDir .. UpdateOrInstall.getArchiveFolder()
 
 	local isOnWindows = (UpdateOrInstall.slash == "\\")
 	local command, err1 = UpdateOrInstall.buildDownloadExtractCommand(tarUrl, archiveFilePath, extractedFolderPath, isOnWindows)
@@ -262,7 +262,7 @@ end
 -- Returns a string of batch commands to run based on the operating system, also returns error messages
 function UpdateOrInstall.buildDownloadExtractCommand(tarUrl, archive, extractedFolder, isOnWindows)
 	local messages = {
-		downloading = "Downloading the latest Ironmon Tracker version.",
+		downloading = "Downloading the latest Shiny Tracker version.",
 		extracting = "Extracting downloaded files.",
 		error1 = "Unable to download or extract files from online release archive.",
 	}
@@ -273,7 +273,7 @@ function UpdateOrInstall.buildDownloadExtractCommand(tarUrl, archive, extractedF
 	local foldersToRemove = {
 		string.format('%s.vscode', extractedFolder .. UpdateOrInstall.slash),
 		string.format('%s.github', extractedFolder .. UpdateOrInstall.slash),
-		string.format('%sironmon_tracker%sDebug', extractedFolder .. UpdateOrInstall.slash, UpdateOrInstall.slash),
+		string.format('%sShiny_tracker%sDebug', extractedFolder .. UpdateOrInstall.slash, UpdateOrInstall.slash),
 	}
 	local filesToRemove = {
 		string.format('%s.editorconfig', extractedFolder .. UpdateOrInstall.slash),
@@ -288,7 +288,7 @@ function UpdateOrInstall.buildDownloadExtractCommand(tarUrl, archive, extractedF
 			string.format('curl -L "%s" -o "%s" --ssl-no-revoke', tarUrl, archive),
 			'echo;',
 			string.format('echo %s', messages.extracting),
-			string.format('cd "%s"', IronmonTracker.workingDir), -- required for mGBA on Windows
+			string.format('cd "%s"', ShinyTracker.workingDir), -- required for mGBA on Windows
 			string.format('tar -xzf "%s"', archive),
 			string.format('del "%s"', archive),
 		}
@@ -306,12 +306,12 @@ function UpdateOrInstall.buildDownloadExtractCommand(tarUrl, archive, extractedF
 			'echo',
 			string.format('echo %s', messages.extracting),
 		}
-		if IronmonTracker.isOnBizhawk then -- Required because Bizhawk doesn't use absolute paths
+		if ShinyTracker.isOnBizhawk then -- Required because Bizhawk doesn't use absolute paths
 			table.insert(batchCommands, string.format('tar -xzf "%s" --overwrite', archive))
 		else
 			table.insert(batchCommands, string.format('mkdir -p "%s"', extractedFolder))
-			local linuxExtract = string.format('tar -xzf "%s" --overwrite -C "%s"', archive, IronmonTracker.workingDir)
-			local macExtract = string.format('tar -xzf "%s" -C "%s"', archive, IronmonTracker.workingDir)
+			local linuxExtract = string.format('tar -xzf "%s" --overwrite -C "%s"', archive, ShinyTracker.workingDir)
+			local macExtract = string.format('tar -xzf "%s" -C "%s"', archive, ShinyTracker.workingDir)
 			table.insert(batchCommands, string.format("(%s || %s)", linuxExtract, macExtract))
 		end
 		table.insert(batchCommands, string.format('rm -rf "%s"', archive))
@@ -354,7 +354,7 @@ function UpdateOrInstall.buildCopyFilesCommand(extractedFolder, isOnWindows)
 	if isOnWindows then
 		batchCommands = {
 			string.format('echo %s', messages.filesready),
-			string.format('cd "%s"', IronmonTracker.workingDir), -- required for mGBA on Windows
+			string.format('cd "%s"', ShinyTracker.workingDir), -- required for mGBA on Windows
 			string.format('echo %s', messages.updating),
 			string.format('xcopy "%s" /s /y /q', extractedFolder),
 			string.format('rmdir "%s" /s /q', extractedFolder),
@@ -365,10 +365,10 @@ function UpdateOrInstall.buildCopyFilesCommand(extractedFolder, isOnWindows)
 		pauseCommand = string.format("echo; && echo %s && echo %s && pause && exit /b 6", messages.error1, messages.error2)
 	else
 		local destinationFolder
-		if IronmonTracker.isOnBizhawk then
+		if ShinyTracker.isOnBizhawk then
 			destinationFolder = "." -- current directory
 		else
-			destinationFolder = IronmonTracker.workingDir
+			destinationFolder = ShinyTracker.workingDir
 		end
 		batchCommands = {
 			string.format('echo %s', messages.filesready),

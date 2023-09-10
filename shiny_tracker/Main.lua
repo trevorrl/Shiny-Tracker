@@ -260,7 +260,7 @@ function Main.SetupFileManager()
 
 	local fileManagerFile = io.open(fileManagerPath, "r")
 	if fileManagerFile == nil then
-		fileManagerPath = (IronmonTracker.workingDir or "") .. fileManagerPath
+		fileManagerPath = (ShinyTracker.workingDir or "") .. fileManagerPath
 		fileManagerFile = io.open(fileManagerPath, "r")
 		if fileManagerFile == nil then
 			local err1 = string.format("Unable to load a Tracker code file: %s", fileManagerPath)

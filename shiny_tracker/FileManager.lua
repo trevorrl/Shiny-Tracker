@@ -201,7 +201,7 @@ end
 
 -- An absolute path working directory is required for Bizhawk (Windows or Linux)
 function FileManager.setupWorkingDirectory()
-	FileManager.dir = IronmonTracker.workingDir or ""
+	FileManager.dir = ShinyTracker.workingDir or ""
 
 	local getDirCommand
 	if FileManager.slash == "\\" then -- Windows
@@ -229,7 +229,7 @@ function FileManager.setupWorkingDirectory()
 		FileManager.dir = ""
 	end
 
-	IronmonTracker.workingDir = FileManager.dir -- required so UpdateOrInstall works regardless of standalone execution
+	ShinyTracker.workingDir = FileManager.dir -- required so UpdateOrInstall works regardless of standalone execution
 end
 
 -- Attempts to execute the command, returning two results: success, outputTable

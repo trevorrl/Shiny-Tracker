@@ -355,7 +355,7 @@ function UpdateScreen.performAutoUpdate()
 		Program.destroyActiveForm()
 		Drawing.AnimatedPokemon:destroy()
 		-- Restart the Tracker code
-		IronmonTracker.startTracker()
+		ShinyTracker.startTracker()
 	else
 		Program.redraw(true)
 	end

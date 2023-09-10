@@ -16,6 +16,8 @@
 		"debug",
 		"callbacks",
 		"memorysavestate",
+		"savestate",
+		"_ENV"
 	],
 	"Lua.runtime.version": "Lua 5.1",
 	"Lua.workspace.checkThirdParty": false

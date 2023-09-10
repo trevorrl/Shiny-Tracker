@@ -8,19 +8,11 @@ REQUIREMENTS
 This tool is ONLY compatible with following emulators:
 - Bizhawk version 2.8 or greater
   - You can find the emulator at https://tasvideos.org/BizHawk/ReleaseHistory
-- mGBA version 0.10.0 or greater
-  - You can find the emulator at https://mgba.io/downloads.html
 
 USAGE FOR BIZHAWK
 1. Open the Bizhawk emulator and load a Pokémon game ROM (see supported games below)
 2. From the emulator menus at the top, click Tools -> Lua Console
 3. In the console window, click Script -> Open Script
-4. Then locate the "Shiny-Tracker.lua" file in the Tracker folder, and open it
-
-USAGE FOR MGBA
-1. Open the mGBA emulator and load a Pokémon game ROM (see supported games below)
-2. From the emulator menus at the top, click Tools -> Scripting
-3. In the console window, click File -> Load Script
 4. Then locate the "Shiny-Tracker.lua" file in the Tracker folder, and open it
 
 To edit the Shiny Tracker settings or theme, simply click the gear icon at the top of the tracker screen.

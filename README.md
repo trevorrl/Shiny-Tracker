@@ -4,8 +4,7 @@
 
 ## General Information
 
-Shiny-Tracker is a collection of lua scripts for the [Bizhawk emulator](https://tasvideos.org/BizHawk/ReleaseHistory) (v2.8 or higher) or [mGBA emulator](https://mgba.io/downloads.html)\* (v0.10.0 or higher) used to track Shiny hunts.
-> \* mGBA's lua scripting is currently limited and doesn't provide any drawing functionality, this means the tracker on mGBA is purely text-based in the scripting window as we can't draw images/screens like on Bizhawk. Additionally, it has only been tested on BizHawk.
+Shiny-Tracker is a collection of lua scripts for the [Bizhawk emulator](https://tasvideos.org/BizHawk/ReleaseHistory) (v2.8 or higher) used to track Shiny hunts.
 
 This project is based on [MKDasher's PokemonBizhawkLua project](https://github.com/mkdasher/PokemonBizhawkLua).
 
@@ -30,8 +29,6 @@ Currently supported (and tested) Pokémon games / languages:
       - [Download Bizhawk](https://tasvideos.org/BizHawk/ReleaseHistory) (v2.8 or higher)
       - If you are on Windows, make sure to also download and run the [prereq installer](https://github.com/TASEmulators/BizHawk-Prereqs/releases) first
       - If you are on Linux, we recommend using Bizhawk 2.9 or higher
-   - Alternatively, you can use the MGBA emulator (Windows/Mac/Linux)
-      - [Download MGBA](https://mgba.io/downloads.html) (v0.10.0 or higher)
 3. **Install and Setup**
    - See the full [Installation Guide](https://github.com/trevorrl/Shiny-Tracker/wiki/Installation-Guide) for more detailed instructions for installing or upgrading.
    - If you are on Linux, you'll also want to install the [Franklin Gothic Medium font](https://fontsgeek.com/fonts/Franklin-Gothic-Medium-Regular).
@@ -67,13 +64,12 @@ There are a couple of VS Code extensions which we recommend, which should automa
 Lua Versions:
 
 - Bizhawk 2.8 uses Lua 5.1, this is the version currently set in our `.vscode/settings.json` file for linting.
-- Bizhawk 2.9 and mGBA use Lua 5.4
+- Bizhawk 2.9 uses Lua 5.4
   - Since we intend to still support Bizhawk 2.8 the code must be compatible with both Lua 5.1 and 5.4
 
 Emu-specific Lua documentation:
 
 - [Bizhawk Lua Functions](https://tasvideos.org/Bizhawk/LuaFunctions)
-- [mGBA Scripting API](https://mgba.io/docs/scripting.html)
 
 ### Branches and Processes
 

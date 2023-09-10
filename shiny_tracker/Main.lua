@@ -81,7 +81,6 @@ function Main.Initialize()
 	print(string.format("Shiny Tracker v%s successfully loaded", Main.TrackerVersion))
 
 	-- Get the quickload files just once to be used in several places during start-up, removed later
-	Main.tempQuickloadFiles = Main.GetQuickloadFiles()
 	Main.ReadAttemptsCount()
 	Main.CheckForVersionUpdate()
 
@@ -162,8 +161,6 @@ function Main.Run()
 	FileManager.setupErrorLog()
 	Main.ReadAttemptsCount() -- re-check attempts count if different game is loaded
 	FileManager.executeEachFile("initialize") -- initialize all tracker files
-	CustomCode.startup()
-	Main.tempQuickloadFiles = nil -- From now on, quickload files should be re-checked
 
 	-- Final garbage collection prior to game loops beginning
 	collectgarbage()
@@ -194,9 +191,7 @@ function Main.Run()
 			Main.frameAdvance()
 		end
 
-		if Main.loadNextSeed then
-			Main.LoadNextRom()
-		elseif Main.updateRequested then
+		if Main.updateRequested then
 			UpdateScreen.performAutoUpdate()
 		end
 	else
@@ -284,7 +279,7 @@ function Main.DisplayError(errMessage)
 	if not Main.IsOnBizhawk() then return end -- Only Bizhawk allows popup form windows
 
 	client.pause()
-	local formTitle = string.format("[v%s] Woops, there's been an issue!", Main.TrackerVersion)
+	local formTitle = string.format("[v%s] Whoops, there's been an issue!", Main.TrackerVersion)
 	local form = forms.newform(400, 150, formTitle, function() client.unpause() end)
 	local actualLocation = client.transformPoint(100, 50)
 	forms.setproperty(form, "Left", client.xpos() + actualLocation['x'] )
@@ -455,332 +450,6 @@ function Main.isOnLatestVersion(versionToCheck)
 	end
 
 	return false
-end
-
-function Main.LoadNextRom()
-	Main.loadNextSeed = false
-	Program.GameTimer:reset()
-
-	Utils.tempDisableBizhawkSound()
-
-	if Main.IsOnBizhawk() then
-		console.clear() -- Clearing the console for each new game helps with troubleshooting issues
-	else
-		MGBA.clearConsole()
-	end
-
-	local nextRomInfo
-	if Options["Use premade ROMs"] then
-		nextRomInfo = Main.GetNextRomFromFolder()
-	elseif Options["Generate ROM each time"] then
-		nextRomInfo = Main.GenerateNextRom()
-	else
-		print("> ERROR: No Quickload method has been chosen yet.")
-		Main.DisplayError("No Quickload method has been chosen yet.\n\nEnable this at: Tracker Settings (gear icon) -> Quickload")
-	end
-
-	-- Tracker restart is expected from quickload, so avoid a falsely-flagged "crash"
-	CrashRecoveryScreen.logCrashReport(false)
-	if nextRomInfo ~= nil then
-
-		-- After successfully generating the next ROM to load: increment attempts, reset tracker data, and make a backup save state
-		local backUpName = string.format("%s %s %s", GameSettings.versioncolor or "", FileManager.PostFixes.PREVIOUSATTEMPT, FileManager.PostFixes.BACKUPSAVE)
-		local backupfilepath = FileManager.prependDir(FileManager.Folders.BackupSaves) .. FileManager.slash .. backUpName
-		Main.currentSeed = Main.currentSeed + 1
-		Main.WriteAttemptsCountToFile(nextRomInfo.attemptsFilePath)
-		Tracker.resetData()
-
-		if Main.IsOnBizhawk() then
-			savestate.save(backupfilepath .. FileManager.Extensions.BIZHAWK_SAVESTATE, true) -- true: suppresses the on-screen display message
-			GameOverScreen.clearTempSaveStates()
-			TimeMachineScreen.cleanupOldRestorePoints(true)
-			if Main.emulator == Main.EMU.BIZHAWK28 then
-				client.closerom() -- This appears to not be needed for Bizhawk 2.9+
-			end
-			if Options["Use premade ROMs"] then
-				print(string.format('> Loading next ROM: %s', nextRomInfo.fileName))
-			end
-			client.openrom(nextRomInfo.filePath)
-		else
-			---@diagnostic disable-next-line: undefined-global
-			emu:saveStateFile(backupfilepath .. FileManager.Extensions.MGBA_SAVESTATE, C.SAVESTATE.ALL)
-			local success = emu:loadFile(nextRomInfo.filePath)
-			if success then
-				if Options["Use premade ROMs"] then
-					print(string.format('> Loading next ROM: %s', nextRomInfo.fileName))
-				end
-				MGBA.hasPrintedInstructions = false
-				emu:reset()
-				return
-			else
-				print(string.format('> ERROR: Unable to Quickload next ROM: %s', nextRomInfo.fileName or "N/A"))
-			end
-		end
-	elseif Options["Use premade ROMs"] or Options["Generate ROM each time"] then
-		local quickloadVerb = Utils.inlineIf(Options["Use premade ROMs"], "find", "create")
-		print(string.format("> Unable to Quickload next ROM; couldn't %s one.", quickloadVerb))
-	end
-
-	Utils.tempEnableBizhawkSound()
-
-	Main.Run()
-end
-
-function Main.GetNextRomFromFolder()
-	print("> Attempting to load next ROM in sequence.")
-
-	local nextRomName, nextRomPath = Main.GetNextBizhawkRomInfoLegacy()
-	local quickloadFiles
-	if nextRomName == nil or nextRomPath == nil then
-		quickloadFiles = Main.GetQuickloadFiles()
-	else
-		quickloadFiles = {}
-	end
-
-	-- Check if any quickload information is available at all
-	if nextRomName == nil and nextRomPath == nil and #quickloadFiles.romList == 0 then
-		print('> ERROR: Quickload "ROMs Folder" setting is incorrect, or ROM files are missing from the quickload folder.')
-		Main.DisplayError('Quickload "ROMs Folder" setting is incorrect, or ROM files are missing from the quickload folder.\n\nFix this at: Tracker Settings (gear icon) -> Quickload')
-		return nil
-	end
-
-	-- If the legacy next rom method worked, use that. Otherwise, lookup info by current attempt count
-	if nextRomName == nil then
-		local nextSeed = Main.currentSeed + 1
-		for _, filename in ipairs(quickloadFiles.romList) do
-			local seedNumberText = string.match(filename, '[0-9]+')
-			if seedNumberText ~= nil then
-				local seedNumber = tonumber(seedNumberText)
-				if seedNumber ~= nil and seedNumber == nextSeed then
-					nextRomName = filename
-					break
-				end
-			end
-		end
-	end
-	if nextRomPath == nil and quickloadFiles.quickloadPath ~= nil then
-		nextRomPath = quickloadFiles.quickloadPath .. (nextRomName or "")
-	end
-
-	if nextRomName == nil or not FileManager.fileExists(nextRomPath) then
-		nextRomName = nextRomName or (GameSettings.getRomName() or "UNNAMED") .. FileManager.Extensions.GBA_ROM
-		print(string.format("> ERROR: Unable to find next ROM to load: %s", nextRomName))
-		Main.DisplayError(string.format("Unable to find next ROM to load: %s", nextRomName) .. "\n\nMake sure your ROMs are numbered sequentially and the ROMs folder is correct.")
-		return nil
-	end
-
-	-- The Attempts filename for premade roms folders is based on the prefix of the rom: e.g. "FireRedKaizo" from "FireRedKaizo42.gba"
-	local romprefix = string.match(nextRomName, '[^0-9]+') or ""
-	local attemptsFileName = string.format("%s %s%s", romprefix, FileManager.PostFixes.ATTEMPTS_FILE, FileManager.Extensions.ATTEMPTS)
-
-	return {
-		fileName = nextRomName,
-		filePath = nextRomPath,
-		attemptsFilePath = FileManager.prependDir(attemptsFileName),
-	}
-end
-
-function Main.GenerateNextRom()
-	local files = Main.GetQuickloadFiles()
-
-	if #files.jarList == 0 or #files.settingsList == 0 or #files.romList == 0 then
-		print("> ERROR: Files missing that are required for Quickload to generate a new ROM.")
-		Main.DisplayError("Files missing that are required for Quickload to generate a new ROM.\n\nFix these at: Tracker Settings (gear icon) -> Quickload")
-		return nil
-	elseif #files.jarList > 1 or #files.settingsList > 1 or #files.romList > 1 then
-		local msg1 = string.format("ERROR: Too many GBA/JAR/RNQS files found in the quickload folder.")
-		local msg2 = string.format("Please remove all-but-one of each these types of files from the folder.")
-		print("> " .. msg1)
-		print("> " .. msg2)
-		Main.DisplayError(msg1 .. "\n" .. msg2)
-		return nil
-	end
-
-	local jarPath = (files.quickloadPath or "") .. files.jarList[1]
-	local settingsPath = (files.quickloadPath or "") .. files.settingsList[1]
-	local romPath = (files.quickloadPath or "") .. files.romList[1]
-
-	-- Filename of the AutoRandomized ROM is based on the settings file (for cases of playing Kaizo + Survival + Others)
-	local settingsFileName = FileManager.extractFileNameFromPath(files.settingsList[1])
-	local attemptsFileName = string.format("%s %s%s", settingsFileName, FileManager.PostFixes.ATTEMPTS_FILE, FileManager.Extensions.ATTEMPTS)
-	local nextRomName = string.format("%s %s%s", settingsFileName, FileManager.PostFixes.AUTORANDOMIZED, FileManager.Extensions.GBA_ROM)
-	local nextRomPath = FileManager.prependDir(nextRomName)
-
-	local previousRomName = Main.SaveCurrentRom(nextRomName)
-
-	-- mGBA only, need to unload current ROM but loading another temp ROM
-	if previousRomName ~= nil and not Main.IsOnBizhawk() then
-		emu:loadFile(FileManager.prependDir(previousRomName))
-	end
-
-	local javacommand = string.format(
-		'java -Xmx4608M -jar "%s" cli -s "%s" -i "%s" -o "%s" -l',
-		jarPath,
-		settingsPath,
-		romPath,
-		nextRomPath
-	)
-
-	local success, fileLines = FileManager.tryOsExecute(javacommand, FileManager.prependDir(FileManager.Files.RANDOMIZER_ERROR_LOG))
-	if success then
-		local output = table.concat(fileLines, "\n")
-		-- It's possible this message changes in the future?
-		---@diagnostic disable-next-line: cast-local-type
-		success = (output:find("Randomized successfully!", 1, true) ~= nil)
-		if not success and output ~= "" then -- only print if something went wrong
-			print("> ERROR: " .. output)
-		end
-	end
-
-	-- If something went wrong and the ROM wasn't generated to the ROM path
-	if not success or not FileManager.fileExists(nextRomPath) then
-		local err1 = "ERROR: The Randomizer program failed to generate a ROM."
-		local err2 = string.format("Check the %s log file in the Tracker folder for errors.", FileManager.Files.RANDOMIZER_ERROR_LOG)
-		print("> " .. err1)
-		print("> " .. err2)
-		Main.DisplayError(err1 .. "\n\n" .. err2)
-		return nil
-	end
-
-	return {
-		fileName = nextRomName,
-		filePath = nextRomPath,
-		attemptsFilePath = FileManager.prependDir(attemptsFileName),
-	}
-end
-
--- Returns a table containing [jars, settings, roms, quickloadPath] either from Settings.ini or from the Quickload folder
-function Main.GetQuickloadFiles()
-	-- Each item in the lists is an absolute file path
-	local fileLists = {
-		jarList = {},
-		settingsList = {},
-		romList = {},
-		quickloadPath = nil,
-	}
-
-	-- If all three supplied exists, shortcut to using those over anything else
-	if Options["Generate ROM each time"] and FileManager.fileExists(Options.FILES["Randomizer JAR"]) and FileManager.fileExists(Options.FILES["Settings File"]) and FileManager.fileExists(Options.FILES["Source ROM"]) then
-		table.insert(fileLists.jarList, Options.FILES["Randomizer JAR"])
-		table.insert(fileLists.settingsList, Options.FILES["Settings File"])
-		table.insert(fileLists.romList, Options.FILES["Source ROM"])
-		return fileLists
-	end
-
-	-- Search the quickload folder for compatible files used for quickload
-	if Options["Use premade ROMs"] and Options.FILES["ROMs Folder"] ~= nil and Options.FILES["ROMs Folder"] ~= "" then
-		-- First make sure the ROMs Folder ends with a slash
-		if Options.FILES["ROMs Folder"]:sub(-1) ~= FileManager.slash then
-			Options.FILES["ROMs Folder"] = Options.FILES["ROMs Folder"] .. FileManager.slash
-		end
-		fileLists.quickloadPath = Options.FILES["ROMs Folder"] -- Assumes absolute path
-	else
-		fileLists.quickloadPath = FileManager.prependDir(FileManager.Folders.Quickload .. FileManager.slash)
-	end
-
-	local listsByExtension = {
-		["jar"] = fileLists.jarList,
-		["rnqs"] = fileLists.settingsList,
-		["gba"] = fileLists.romList,
-	}
-
-	local quickloadFileNames = FileManager.getFilesFromDirectory(fileLists.quickloadPath)
-	for _, filename in pairs(quickloadFileNames) do
-		local ext = FileManager.extractFileExtensionFromPath(filename) or ""
-		if listsByExtension[ext] ~= nil then
-			table.insert(listsByExtension[ext], filename)
-		end
-	end
-
-	-- If some files were missing from the folder, check again from Options if they were partially added in from Settings.ini
-	if Options["Generate ROM each time"] then
-		if #fileLists.jarList == 0 and FileManager.fileExists(Options.FILES["Randomizer JAR"]) then
-			table.insert(fileLists.jarList, Options.FILES["Randomizer JAR"])
-		end
-		if #fileLists.settingsList == 0 and FileManager.fileExists(Options.FILES["Settings File"]) then
-			table.insert(fileLists.settingsList, Options.FILES["Settings File"])
-		end
-		if #fileLists.romList == 0 and FileManager.fileExists(Options.FILES["Source ROM"]) then
-			table.insert(fileLists.romList, Options.FILES["Source ROM"])
-		end
-	end
-
-	return fileLists
-end
-
--- Returns two results for the next rom: name and filepath. This is the legacy method prior to mGBA changes.
-function Main.GetNextBizhawkRomInfoLegacy()
-	if not Main.IsOnBizhawk() or Options.FILES["ROMs Folder"] == nil or Options.FILES["ROMs Folder"] == "" then
-		return nil
-	end
-
-	local romsFolderPath = Options.FILES["ROMs Folder"]
-	if romsFolderPath:sub(-1) ~= FileManager.slash then
-		romsFolderPath = romsFolderPath .. FileManager.slash
-	end
-
-	-- Split the ROM name into its prefix and numerical values
-	local currentRomName = GameSettings.getRomName() or ""
-	local currentRomPrefix = string.match(currentRomName, '[^0-9]+') or ""
-	local currentRomNumber = string.match(currentRomName, '[0-9]+') or "0"
-
-	-- Increment to the next ROM and determine its full file path
-	local nextRomName = string.format(currentRomPrefix .. "%0" .. string.len(currentRomNumber) .. "d", tonumber(currentRomNumber) + 1)
-	local nextRomPath = romsFolderPath .. nextRomName .. FileManager.Extensions.GBA_ROM
-
-	-- First try loading the next rom as-is with spaces, otherwise replace spaces with underscores and try again
-	if not FileManager.fileExists(nextRomPath) then
-		-- File doesn't exist, try again with underscores instead of spaces (awkward Bizhawk issue)
-		nextRomName = nextRomName:gsub(" ", "_")
-		nextRomPath = romsFolderPath .. nextRomName .. FileManager.Extensions.GBA_ROM
-		if not FileManager.fileExists(nextRomPath) then
-			-- This means there doesn't exist a ROM file with spaces or underscores
-			return nil
-		end
-	end
-
-	return nextRomName, nextRomPath
-end
-
--- Returns the smallest seed number from among files found in the quickload folder
-function Main.FindSmallestSeedFromQuickloadFiles()
-	local smallestSeed
-	local quickloadFiles = Main.tempQuickloadFiles or Main.GetQuickloadFiles()
-	for _, filename in ipairs(quickloadFiles.romList) do
-		local seedNumberText = string.match(filename, '[0-9]+')
-		if seedNumberText ~= nil then
-			local seedNumber = tonumber(seedNumberText)
-			if smallestSeed == nil or seedNumber < smallestSeed then
-				smallestSeed = seedNumber
-			end
-		end
-	end
-	return smallestSeed or -1
-end
-
--- Creates a backup copy of a ROM 'filename' and its log file, labeling them as "PreviousAttempt"
--- returns the name of the newly created file, if any
-function Main.SaveCurrentRom(filename)
-	if filename == nil then
-		return nil
-	end
-
-	local filenameCopy = filename:gsub(FileManager.PostFixes.AUTORANDOMIZED, FileManager.PostFixes.PREVIOUSATTEMPT)
-	local filepath = FileManager.prependDir(filename)
-	local filepathCopy = FileManager.prependDir(filenameCopy)
-
-	if FileManager.CopyFile(filepath, filepathCopy, "overwrite") then
-		local logFilename = filename .. FileManager.Extensions.RANDOMIZER_LOGFILE
-		local logFilenameCopy = filenameCopy .. FileManager.Extensions.RANDOMIZER_LOGFILE
-		local logpath = FileManager.prependDir(logFilename)
-		local logpathCopy = FileManager.prependDir(logFilenameCopy)
-
-		FileManager.CopyFile(logpath, logpathCopy, "overwrite")
-
-		return filenameCopy
-	end
-
-	return nil
 end
 
 function Main.GetAttemptsFile()
@@ -962,32 +631,6 @@ function Main.LoadSettings()
 		end
 	end
 
-	-- [EXTENSIONS]
-	CustomCode.ExtensionLibrary = {}
-	if settings.extensions ~= nil then
-		for extKey, extValue in pairs(settings.extensions) do
-			if extValue ~= nil then
-				if CustomCode.ExtensionLibrary[extKey] == nil then
-					CustomCode.ExtensionLibrary[extKey] = {
-						isEnabled = extValue,
-						isLoaded = false,
-					}
-				else
-					CustomCode.ExtensionLibrary[extKey].isEnabled = extValue
-				end
-			end
-		end
-	end
-
-	-- [EXTCONFIG]
-	if settings.extconfig ~= nil then
-		for key, val in pairs(settings.extconfig) do
-			if val ~= nil then
-				Main.SetMetaSetting("extconfig", key, val)
-			end
-		end
-	end
-
 	return true
 end
 
@@ -1005,7 +648,6 @@ function Main.SaveSettings(forced)
 	if settings.tracker == nil then settings.tracker = {} end
 	if settings.controls == nil then settings.controls = {} end
 	if settings.theme == nil then settings.theme = {} end
-	if settings.extensions == nil then settings.extensions = {} end
 
 	-- [CONFIG]
 	settings.config.RemindMeLater = Main.Version.remindMe
@@ -1039,14 +681,6 @@ function Main.SaveSettings(forced)
 	end
 	settings.theme["MOVE_TYPES_ENABLED"] = Theme.MOVE_TYPES_ENABLED
 	settings.theme["DRAW_TEXT_SHADOWS"] = Theme.DRAW_TEXT_SHADOWS
-
-	-- [EXTENSIONS]
-	for extKey, extension in pairs(CustomCode.ExtensionLibrary) do
-		settings.extensions[extKey] = extension.isEnabled or false
-	end
-
-	-- [EXTCONFIG]
-	-- Implied to save all things in settings.extconfig
 
 	Inifile.save(FileManager.prependDir(FileManager.Files.SETTINGS), settings)
 	Theme.settingsUpdated = false

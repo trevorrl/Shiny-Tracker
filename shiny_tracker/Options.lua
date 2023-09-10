@@ -59,7 +59,7 @@ Options.IconSetMap = {
 	{
 		name = "Original", -- The name of the icon set which is displayed on the Tracker Setup screen
 		author = "Besteon", -- The name of the creator of the icon set which is displayed on the Tracker Setup screen
-		folder = "pokemon", -- The folder within the tracker files where each icon is stored, expected to be in /ironmon-tracker/images/
+		folder = "pokemon", -- The folder within the tracker files where each icon is stored, expected to be in /shiny-tracker/images/
 		extension = ".gif", -- The file extension for each icon, expected that all icons use the same file extension
 		yOffset = 0, -- A number of pixels to shift the drawing of the icon downward
 		adjustQuestionMark = true, -- If true, will shift the question mark icon on the RouteInfo screen downward `yOffset` pixels

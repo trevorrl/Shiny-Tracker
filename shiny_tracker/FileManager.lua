@@ -4,7 +4,7 @@ FileManager = {}
 FileManager.slash = package.config:sub(1,1) or "\\"
 
 FileManager.Folders = {
-	TrackerCode = "ironmon_tracker",
+	TrackerCode = "shiny_tracker",
 	Custom = "extensions",
 	Quickload = "quickload",
 	SavedGames = "saved_games", -- needs to be created first to be used
@@ -65,11 +65,8 @@ FileManager.Extensions = {
 }
 
 FileManager.Urls = {
-	VERSION = "https://api.github.com/repos/besteon/Ironmon-Tracker/releases/latest",
-	DOWNLOAD = "https://github.com/besteon/Ironmon-Tracker/releases/latest",
-	WIKI = "https://github.com/besteon/Ironmon-Tracker/wiki",
-	DISCUSSIONS = "https://github.com/besteon/Ironmon-Tracker/discussions/389", -- Discussion: "Help us translate the Ironmon Tracker"
-	EXTENSIONS = "https://github.com/besteon/Ironmon-Tracker/wiki/Tracker-Add-ons#custom-code-extensions",
+	VERSION = "https://api.github.com/repos/trevorrl/Shiny-Tracker/releases/latest",
+	DOWNLOAD = "https://github.com/trevorrl/Shiny-Tracker/releases/latest",
 }
 
 -- All Lua code files used by the Tracker, loaded and initialized in the order listed

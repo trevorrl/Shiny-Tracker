@@ -148,7 +148,7 @@ ScreenResources{
 		PromptStepsEnterGoal = "How many steps to reach your goal?",
 	},
 	StartupScreen = {
-		Title = "Ironmon Tracker",
+		Title = "Shiny Tracker",
 		Version = "Version",
 		Game = "Game",
 		Attempts = "Attempts",
@@ -744,7 +744,7 @@ ScreenResources{
 		PCHealsDesc = "Allows you to manually change the tracked Pokécenter usage counter to a different number.",
 		PCHealsError1 = "Where # is a positive number between 0 and 99.",
 		PCHealsSuccess = "Updating PC Heal count to",
-		CreditsDesc = "Displays a list of team members who helped contribute to creating the Ironmon Tracker.",
+		CreditsDesc = "Displays a list of team members who helped contribute to creating the Shiny Tracker.",
 		CreditsCreated = "Created by",
 		CreditsContributors = "Contributors",
 		SaveDataDesc = "Saves all tracked data for your current game.\n The TDAT save file can be found in your main Tracker folder.",

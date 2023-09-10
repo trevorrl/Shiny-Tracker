@@ -347,7 +347,7 @@ function GameSettings.setGameInfo(gamecode)
 		GameSettings.badgeXOffsets = game.BADGE_XOFFSETS
 	else
 		GameSettings.gamename = "Unsupported Game"
-		Main.DisplayError("This game is unsupported by the Ironmon Tracker.\n\nCheck the tracker's README.txt file for currently supported games.")
+		Main.DisplayError("This game is unsupported by the Shiny Tracker.\n\nCheck the tracker's README.txt file for currently supported games.")
 	end
 end
 

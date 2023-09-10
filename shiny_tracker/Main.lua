@@ -1,11 +1,11 @@
 Main = {}
 
 -- The latest version of the tracker. Should be updated with each PR.
-Main.Version = { major = "8", minor = "2", patch = "0" }
+Main.Version = { major = "0", minor = "1", patch = "0" }
 
 Main.CreditsList = { -- based on the PokemonBizhawkLua project by MKDasher
-	CreatedBy = "Besteon",
-	Contributors = { "UTDZac", "Fellshadow", "ninjafriend", "OnlySpaghettiCode", "bdjeffyp", "Amber Cyprian", "thisisatest", "kittenchilly", "Aeiry", "TheRealTaintedWolf", "Kurumas", "davidhouweling", "AKD", "rcj001", "GB127", },
+	CreatedBy = "Trevorrl",
+	Contributors = { "Besteon", "UTDZac", "Fellshadow", "ninjafriend", "OnlySpaghettiCode", "bdjeffyp", "Amber Cyprian", "thisisatest", "kittenchilly", "Aeiry", "TheRealTaintedWolf", "Kurumas", "davidhouweling", "AKD", "rcj001", "GB127", },
 }
 
 Main.EMU = {
@@ -78,7 +78,7 @@ function Main.Initialize()
 	Main.LoadSettings()
 	Resources.initialize()
 
-	print(string.format("Ironmon Tracker v%s successfully loaded", Main.TrackerVersion))
+	print(string.format("Shiny Tracker v%s successfully loaded", Main.TrackerVersion))
 
 	-- Get the quickload files just once to be used in several places during start-up, removed later
 	Main.tempQuickloadFiles = Main.GetQuickloadFiles()
@@ -88,7 +88,7 @@ function Main.Initialize()
 	return true
 end
 
--- Waits for game to be loaded, then begins the Main loop. From here after, do NOT trust values from IronmonTracker.lua
+-- Waits for game to be loaded, then begins the Main loop. From here after, do NOT trust values from Shiny-Tracker.lua
 function Main.Run()
 	if Main.IsOnBizhawk() then
 		-- mGBA hates infinite loops. This "wait for startup" is handled differently
@@ -256,7 +256,7 @@ end
 
 function Main.SetupFileManager()
 	local slash = package.config:sub(1,1) or "\\" -- Windows is \ and Linux is /
-	local fileManagerPath = "ironmon_tracker" .. slash .. "FileManager.lua"
+	local fileManagerPath = "shiny_tracker" .. slash .. "FileManager.lua"
 
 	local fileManagerFile = io.open(fileManagerPath, "r")
 	if fileManagerFile == nil then

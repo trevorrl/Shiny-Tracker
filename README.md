@@ -1,4 +1,4 @@
-# Ironmon-Tracker
+# Shiny-Tracker
 
 ### [General Information](#general-information) | [Supported Games](#supported-games) | [Installation](#installation) | [Latest Changes](#latest-changes) | [Contributing](#contributing)
 
@@ -62,7 +62,7 @@ There are a couple of VS Code extensions which we recommend, which should automa
 
 - [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig): To help with consistent formatting.
 - [vscode-lua](https://marketplace.visualstudio.com/items?itemName=trixnz.vscode-lua): Provides intellisense and linting for Lua.
-- [Lua](https://marketplace.visualstudio.com/items?itemName=sumneko.lua): This is Trevor's preferred Lua intellisense extension, provided in addition to the one recommended by the Ironmon Team.
+- [Lua](https://marketplace.visualstudio.com/items?itemName=sumneko.lua): This is Trevor's preferred Lua intellisense extension, provided in addition to the one recommended by the Shiny Team.
 
 Lua Versions:
 

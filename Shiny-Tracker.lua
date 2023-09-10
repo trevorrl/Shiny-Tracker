@@ -65,7 +65,7 @@ function ShinyTracker.tryLoad()
 	end
 
 	-- Verify the Main.lua Tracker file exists
-	local mainFilePath = ShinyTracker.workingDir .. "Shiny_tracker/Main.lua"
+	local mainFilePath = ShinyTracker.workingDir .. "shiny_tracker/Main.lua"
 	local file = io.open(mainFilePath, "r")
 	if file == nil then
 		print('> Error starting up the Tracker: Unable to load the required main Tracker file.')

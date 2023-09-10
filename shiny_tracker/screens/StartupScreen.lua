@@ -32,13 +32,6 @@ StartupScreen.Buttons = {
 		end,
 		onClick = function(self) Program.changeScreenView(UpdateScreen) end
 	},
-	AttemptsCount = {
-		type = Constants.ButtonTypes.NO_BORDER,
-		getText = function(self) return tostring(Main.currentSeed) or Constants.BLANKLINE end,
-		box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 54, Constants.SCREEN.MARGIN + 37, 33, 11 },
-		isVisible = function() return Main.currentSeed > 1 end,
-		onClick = function(self) StreamerScreen.openEditAttemptsWindow() end
-	},
 	NotesAreaEdit = {
 		type = Constants.ButtonTypes.PIXELIMAGE,
 		image = Constants.PixelImages.NOTEPAD,
@@ -131,13 +124,6 @@ function StartupScreen.setPokemonIcon(displayOption)
 	if displayOption == Options.StartupIcon.random then
 		pokemonID = Utils.randomPokemonID()
 		Options["Startup Pokemon displayed"] = Options.StartupIcon.random
-	elseif displayOption == Options.StartupIcon.attempts then
-		-- Show a Pokemon with a Gen 3 Pokedex number equal to the Attempts count
-		pokemonID = (Main.currentSeed - 1) % (PokemonData.totalPokemon - 25) + 1
-		if pokemonID > 251 then
-			pokemonID = pokemonID + 25
-		end
-		Options["Startup Pokemon displayed"] = Options.StartupIcon.attempts
 	elseif displayOption == Options.StartupIcon.none then
 		pokemonID = 0
 		Options["Startup Pokemon displayed"] = Options.StartupIcon.none
@@ -177,9 +163,7 @@ function StartupScreen.openChoosePokemonWindow()
 	forms.setproperty(pokedexDropdown, "AutoCompleteMode", "Append")
 
 	local initialChoice
-	if Options["Startup Pokemon displayed"] == Options.StartupIcon.attempts then
-		initialChoice = dropdownOptions[1]
-	elseif Options["Startup Pokemon displayed"] == Options.StartupIcon.random then
+	if Options["Startup Pokemon displayed"] == Options.StartupIcon.random then
 		initialChoice = dropdownOptions[2]
 	elseif Options["Startup Pokemon displayed"] == Options.StartupIcon.none then
 		initialChoice = dropdownOptions[3]
@@ -192,10 +176,8 @@ function StartupScreen.openChoosePokemonWindow()
 		local optionSelected = forms.gettext(pokedexDropdown)
 
 		if optionSelected == dropdownOptions[1] then
-			optionSelected = Options.StartupIcon.attempts
-		elseif optionSelected == dropdownOptions[2] then
 			optionSelected = Options.StartupIcon.random
-		elseif optionSelected == dropdownOptions[3] then
+		elseif optionSelected == dropdownOptions[2] then
 			optionSelected = Options.StartupIcon.none
 		elseif optionSelected ~= "..................................." then
 			-- The option is a Pokemon's name and needs to be convered to an ID
@@ -262,9 +244,6 @@ function StartupScreen.drawScreen()
 	Drawing.drawText(topcolX, textLineY, GameSettings.versioncolor, topBox.text, topBox.shadow)
 	textLineY = textLineY + linespacing
 
-	if StartupScreen.Buttons.AttemptsCount.isVisible() then
-		Drawing.drawText(topBox.x + 2, textLineY, Resources.StartupScreen.Attempts .. ":", topBox.text, topBox.shadow)
-	end
 	textLineY = textLineY + linespacing
 
 	-- Display info about the tracked data notes, except when starting a new game (keep it clean)

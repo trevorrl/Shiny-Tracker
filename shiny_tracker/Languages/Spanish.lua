@@ -151,7 +151,6 @@ ScreenResources{
 		Title = "Shiny Tracker", -- NEEDS TRANSLATION
 		Version = "Version", -- NEEDS TRANSLATION
 		Game = "Game", -- NEEDS TRANSLATION
-		Attempts = "Attempts", -- NEEDS TRANSLATION
 		TrackedDataMsgLabel = "Tracker Notes", -- NEEDS TRANSLATION
 		TrackedDataMsgLoadSuccess = "Loaded from last play session.", -- NEEDS TRANSLATION
 		TrackedDataMsgNewGame = "New game started.", -- NEEDS TRANSLATION
@@ -300,7 +299,6 @@ ScreenResources{
 	StatsScreen = {
 		Title = "Game Stats", -- NEEDS TRANSLATION
 		StatPlayTime = "Play time", -- NEEDS TRANSLATION
-		StatTotalAttempts = "Total attempts", -- NEEDS TRANSLATION
 		StatPCsUsed = "Pokécenters used", -- NEEDS TRANSLATION
 		StatTrainerBattles = "Trainer battles", -- NEEDS TRANSLATION
 		StatWildEncounters = "Wild encounters", -- NEEDS TRANSLATION
@@ -335,12 +333,9 @@ ScreenResources{
 	StreamerScreen = {
 		Title = "Streamer Tools", -- NEEDS TRANSLATION
 		ButtonEdit = "Edit", -- NEEDS TRANSLATION
-		LabelAttemptsCount = "Attempts Count", -- NEEDS TRANSLATION
 		LabelWelcomeMessage = "Welcome Message", -- NEEDS TRANSLATION
 		LabelFavorites = "Favorite Pokémon", -- NEEDS TRANSLATION
 		OptionDisplayFavorites = "Show on new game screen", -- NEEDS TRANSLATION
-		PromptEditAttemptsTitle = "Edit Attempts Counter", -- NEEDS TRANSLATION
-		PromptEditAttemptsDesc = "Enter the number of attempts", -- NEEDS TRANSLATION
 		PromptEditWelcomeTitle = "Edit Welcome Message", -- NEEDS TRANSLATION
 		PromptEditWelcomeDesc = "Edit the welcome message box on the Tracker, shown each time a new game begins.", -- NEEDS TRANSLATION
 		PromptChooseFavoriteTitle = "Choose a Favorite", -- NEEDS TRANSLATION
@@ -768,9 +763,6 @@ ScreenResources{
 		UpdateNowSteps3 = "Click File -> Load script (or Load recent script)", -- NEEDS TRANSLATION
 		QuickloadDesc = "Forces the Tracker to Quickload a new game ROM.", -- NEEDS TRANSLATION
 		HelpWikiDesc = "Opens a browser window showing helpful wiki pages that explain various features of the Tracker.", -- NEEDS TRANSLATION
-		AttemptsDesc = "Allows you to manually change the Attempts counter to a different number, shown on the Stats sidebar.", -- NEEDS TRANSLATION
-		AttemptsError1 = "Where # is a positive number.", -- NEEDS TRANSLATION
-		AttemptsSuccess = "Updating Attempts counter", -- NEEDS TRANSLATION
 		RandomBallDesc = "Chooses a random Pokémon starter Poké Ball from among: Left, Middle, or Right.", -- NEEDS TRANSLATION
 		RandomBallSuccess = "Randomly chosen starter Poké Ball", -- NEEDS TRANSLATION
 		LanguageDesc = "Change the display language of the Tracker.", -- NEEDS TRANSLATION

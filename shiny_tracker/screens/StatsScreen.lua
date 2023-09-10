@@ -12,10 +12,6 @@ StatsScreen.StatTables = {
 		getValue = function() return Program.GameTimer:getText() end,
 	},
 	{
-		getText = function() return Resources.StatsScreen.StatTotalAttempts end,
-		getValue = function() return Main.currentSeed or 1 end,
-	},
-	{
 		getText = function() return Resources.StatsScreen.StatPCsUsed end,
 		getValue = function()
 			local gameStat_UsedPokecenter = Utils.getGameStat(Constants.GAME_STATS.USED_POKECENTER) or 0

@@ -80,8 +80,6 @@ function Main.Initialize()
 
 	print(string.format("Shiny Tracker v%s successfully loaded", Main.TrackerVersion))
 
-	-- Get the quickload files just once to be used in several places during start-up, removed later
-	Main.ReadAttemptsCount()
 	Main.CheckForVersionUpdate()
 
 	return true
@@ -159,7 +157,6 @@ function Main.Run()
 
 	-- After a game is successfully loaded, then initialize the remaining Tracker files
 	FileManager.setupErrorLog()
-	Main.ReadAttemptsCount() -- re-check attempts count if different game is loaded
 	FileManager.executeEachFile("initialize") -- initialize all tracker files
 
 	-- Final garbage collection prior to game loops beginning
@@ -450,72 +447,6 @@ function Main.isOnLatestVersion(versionToCheck)
 	end
 
 	return false
-end
-
-function Main.GetAttemptsFile()
-	local attemptsFileName, attemptsFilePath
-
-	-- Otherwise, check if an attempts file exists based on the ROM file name (w/o numbers)
-	-- The case when using Quickload method: premade ROMS
-	local quickloadRomName
-	-- If on Bizhawk, can just get the currently loaded ROM
-	-- mGBA however does NOT return the filename, so need to use the quickload folder files
-	if Main.IsOnBizhawk() then
-		quickloadRomName = GameSettings.getRomName() or ""
-	else
-		quickloadRomName = ""
-	end
-
-	local romprefix = string.match(quickloadRomName, '[^0-9]+') or "" -- remove numbers
-
-	attemptsFileName = string.format("%s %s%s", romprefix, FileManager.PostFixes.ATTEMPTS_FILE, FileManager.Extensions.ATTEMPTS)
-	attemptsFilePath = FileManager.getPathIfExists(attemptsFileName)
-
-	-- Otherwise, create an attempts file using the name provided by the emulator itself
-	if attemptsFilePath == nil then
-		attemptsFilePath = FileManager.prependDir(string.format("%s %s%s", romprefix, FileManager.PostFixes.ATTEMPTS_FILE, FileManager.Extensions.ATTEMPTS))
-	end
-
-	return attemptsFilePath
-end
-
--- Determines what attempts # the play session is on, either from pre-existing file or from Bizhawk's ROM Name
-function Main.ReadAttemptsCount()
-	local filepath = Main.GetAttemptsFile()
-	local attemptsRead = io.open(filepath, "r")
-
-	-- First check if a matching "attempts file" already exists, if so read from that
-	if attemptsRead ~= nil then
-		local attemptsText = attemptsRead:read("*a")
-		attemptsRead:close()
-		if attemptsText ~= nil and tonumber(attemptsText) ~= nil then
-			Main.currentSeed = tonumber(attemptsText)
-		end
-	elseif Options["Use premade ROMs"] then
-		if Main.IsOnBizhawk() then -- mostly for Bizhawk
-			local romname = GameSettings.getRomName() or ""
-			local romnumber = string.match(romname, '[0-9]+') or "1"
-			if romnumber ~= "1" then
-				Main.currentSeed = tonumber(romnumber)
-			end
-		elseif Options.FILES["ROMs Folder"] == nil or Options.FILES["ROMs Folder"] == "" then -- mostly for mGBA
-			local smallestSeedNumber = Main.FindSmallestSeedFromQuickloadFiles()
-			if smallestSeedNumber ~= -1 then
-				Main.currentSeed = smallestSeedNumber
-			end
-		end
-	end
-	-- Otherwise, leave the attempts count at default, which is 1
-end
-
-function Main.WriteAttemptsCountToFile(filepath, attemptsCount)
-	attemptsCount = attemptsCount or Main.currentSeed
-
-	local attemptsWrite = io.open(filepath, "w")
-	if attemptsWrite ~= nil then
-		attemptsWrite:write(attemptsCount)
-		attemptsWrite:close()
-	end
 end
 
 -- Get the user settings saved on disk and create the base Settings object; returns true if successfully reads in file

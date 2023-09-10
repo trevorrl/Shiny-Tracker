@@ -1151,28 +1151,6 @@ MGBA.CommandMap = {
 			Utils.openBrowserWindow(FileManager.Urls.WIKI, Resources.NavigationMenu.MessageCheckConsole)
 		end,
 	},
-	["ATTEMPTS"] = {
-		getDesc = function(self) return Resources.MGBACommands.AttemptsDesc end,
-		usageSyntax = 'ATTEMPTS "#"',
-		usageExample = 'ATTEMPTS "123"',
-		execute = function(self, params)
-			params = params or ""
-			local number = tonumber(params:match("^%d+") or "")
-			if number == nil or number <= 0 then
-				printf(" %s: %s", Resources.MGBACommands.UsageError, self.usageSyntax or "N/A")
-				printf(" - %s", Resources.MGBACommands.AttemptsError1)
-				return
-			end
-
-			local prevAttemptsCount = Main.currentSeed
-			Main.currentSeed = math.floor(number)
-			if prevAttemptsCount ~= Main.currentSeed then
-				Main.WriteAttemptsCountToFile(Main.GetAttemptsFile(), Main.currentSeed)
-				Program.redraw(true)
-			end
-			printf(" %s: '%s' -> '%s'", Resources.MGBACommands.AttemptsSuccess, prevAttemptsCount, Main.currentSeed)
-		end,
-	},
 	["RANDOMBALL"] = {
 		getDesc = function(self) return Resources.MGBACommands.RandomBallDesc end,
 		usageSyntax = 'RANDOMBALL()',

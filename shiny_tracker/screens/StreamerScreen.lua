@@ -10,18 +10,6 @@ StreamerScreen = {
 }
 
 StreamerScreen.Buttons = {
-	AttemptsCountEdit = {
-		type = Constants.ButtonTypes.FULL_BORDER,
-		getText = function(self) return Resources.StreamerScreen.ButtonEdit end,
-		box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 112, Constants.SCREEN.MARGIN + 14, 23, 11 },
-		draw = function(self, shadowcolor)
-			-- Draw the Label text to its left
-			local x = Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 3
-			local y = self.box[2]
-			Drawing.drawText(x, y, Resources.StreamerScreen.LabelAttemptsCount .. ":", Theme.COLORS[self.textColor], shadowcolor)
-		end,
-		onClick = function(self) StreamerScreen.openEditAttemptsWindow() end,
-	},
 	WelcomeMessageEdit = {
 		type = Constants.ButtonTypes.FULL_BORDER,
 		getText = function(self) return Resources.StreamerScreen.ButtonEdit end,
@@ -96,28 +84,6 @@ function StreamerScreen.initialize()
 	StreamerScreen.Buttons.ShowFavorites.toggleState = Options["Show on new game screen"] or false
 
 	StreamerScreen.loadFavorites()
-end
-
-function StreamerScreen.openEditAttemptsWindow()
-	local form = Utils.createBizhawkForm(Resources.StreamerScreen.PromptEditAttemptsTitle, 320, 130)
-
-	forms.label(form, Resources.StreamerScreen.PromptEditAttemptsDesc, 48, 10, 300, 20)
-	local textBox = forms.textbox(form, Main.currentSeed, 200, 30, "UNSIGNED", 50, 30)
-	forms.button(form, Resources.AllScreens.Save, function()
-		local formInput = forms.gettext(textBox)
-		if formInput ~= nil and formInput ~= "" then
-			local newAttemptsCount = tonumber(formInput)
-			if newAttemptsCount ~= nil and Main.currentSeed ~= newAttemptsCount then
-				Main.currentSeed = newAttemptsCount
-				Main.WriteAttemptsCountToFile(Main.GetAttemptsFile(), newAttemptsCount)
-				Program.redraw(true)
-			end
-		end
-		Utils.closeBizhawkForm(form)
-	end, 72, 60)
-	forms.button(form, Resources.AllScreens.Cancel, function()
-		Utils.closeBizhawkForm(form)
-	end, 157, 60)
 end
 
 function StreamerScreen.openEditWelcomeMessageWindow()

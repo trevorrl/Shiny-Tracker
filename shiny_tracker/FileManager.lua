@@ -40,7 +40,6 @@ FileManager.Files = {
 }
 
 FileManager.PostFixes = {
-	ATTEMPTS_FILE = "Attempts",
 	AUTOSAVE = "AutoSave",
 	BACKUPSAVE = "BackupSave",
 }
@@ -48,7 +47,6 @@ FileManager.PostFixes = {
 FileManager.Extensions = {
 	GBA_ROM = ".gba",
 	TRACKED_DATA = ".tdat",
-	ATTEMPTS = ".txt",
 	ANIMATED_POKEMON = ".gif",
 	TRAINER = ".png",
 	BADGE = ".png",

@@ -112,15 +112,13 @@ end
 
 -- This determines what icon to show on each Startup Screen
 -- random: changes randomly each seed
--- attempts: shows a Pokemon based on the attempt count, eg. "attempt 25" would show Pikachu
 -- [ID_NUM]: shows the same Pokemon every time, eg. "set as 213" would always show Shuckle
 Options.StartupIcon = {
 	random = "Random",
-	attempts = "Attempts",
 	none = "None",
 }
 
-Options["Startup Pokemon displayed"] = Options.StartupIcon.attempts
+Options["Startup Pokemon displayed"] = Options.StartupIcon.none
 
 local defaultOptions = {}
 FileManager.copyTable(Options, defaultOptions)

@@ -881,8 +881,8 @@ function TrackerScreen.drawPokemonInfoArea(data)
 	gui.drawRectangle(Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN, Constants.SCREEN.MARGIN + 52, 96, infoBoxHeight, Theme.COLORS["Upper box border"], Theme.COLORS["Upper box background"])
 
 	if Tracker.Data.isViewingOwn and data.p.id ~= 0 then
-		local healsInBagText = string.format("%s:", Resources.TrackerScreen.HealsInBag)
-		local healsValueText = string.format("%.0f%% %s (%s)", data.x.healperc, Resources.TrackerScreen.HPAbbreviation, data.x.healnum)
+		local healsInBagText = "Shiny?"
+		local healsValueText = string.format("%s", data.p.isMonShiny)
 		Drawing.drawText(Constants.SCREEN.WIDTH + 6, 57, healsInBagText, Theme.COLORS["Default text"], shadowcolor)
 		Drawing.drawText(Constants.SCREEN.WIDTH + 6, 68, healsValueText, Theme.COLORS["Default text"], shadowcolor)
 

@@ -9,7 +9,6 @@ Main.CreditsList = { -- based on the PokemonBizhawkLua project by MKDasher
 }
 
 Main.EMU = {
-	MGBA = "mGBA", -- Lua 5.4
 	BIZHAWK_OLD = "Bizhawk Old", -- Non-compatible Bizhawk version
 	BIZHAWK28 = "Bizhawk 2.8", -- Lua 5.1
 	BIZHAWK29 = "Bizhawk 2.9", -- Lua 5.4
@@ -80,6 +79,7 @@ function Main.Initialize()
 
 	print(string.format("Shiny Tracker v%s successfully loaded", Main.TrackerVersion))
 
+	Main.ReadResetsCount()
 	Main.CheckForVersionUpdate()
 
 	return true
@@ -116,28 +116,23 @@ function Main.Run()
 			Main.stopCallbackId = callbacks:add("stop", function()
 				-- Emulator is closing as expected; no crash
 				CrashRecoveryScreen.logCrashReport(false)
-				MGBA.removeActiveRunCallbacks()
 			end)
 		end
 		if Main.shutdownCallbackId == nil then
 			Main.shutdownCallbackId = callbacks:add("shutdown", function()
 				-- Emulator is closing as expected; no crash
 				CrashRecoveryScreen.logCrashReport(false)
-				MGBA.removeActiveRunCallbacks()
 			end)
 		end
 		if Main.crashedCallbackId == nil then
 			Main.crashedCallbackId = callbacks:add("crashed", function()
 				CrashRecoveryScreen.logCrashReport(true)
-				MGBA.removeActiveRunCallbacks()
 			end)
 		end
 
 		if emu == nil then
 			print("> Waiting for a game ROM to be loaded... (mGBA Emulator -> File -> Load ROM...)")
 			return
-		else
-			MGBA.setupActiveRunCallbacks()
 		end
 	end
 
@@ -157,6 +152,7 @@ function Main.Run()
 
 	-- After a game is successfully loaded, then initialize the remaining Tracker files
 	FileManager.setupErrorLog()
+	Main.ReadResetsCount()
 	FileManager.executeEachFile("initialize") -- initialize all tracker files
 
 	-- Final garbage collection prior to game loops beginning
@@ -191,8 +187,6 @@ function Main.Run()
 		if Main.updateRequested then
 			UpdateScreen.performAutoUpdate()
 		end
-	else
-		MGBA.printStartupInstructions()
 	end
 end
 
@@ -447,6 +441,41 @@ function Main.isOnLatestVersion(versionToCheck)
 	end
 
 	return false
+end
+
+function Main.GetResetsFile()
+	local romName = GameSettings.getRomName() or ""
+	local romPrefix = string.match(romName, '[^0-9]+') or ""
+	local attemptsFileName = string.format("%s %s%s", romPrefix, FileManager.PostFixes.RESETS_FILE, FileManager.Extensions.RESETS)
+	local attemptsFilePath = FileManager.getPathIfExists(attemptsFileName)
+
+	if attemptsFilePath == nil then
+		attemptsFilePath = FileManager.prependDir(string.format("%s %s%s", romPrefix, FileManager.PostFixes.RESETS_FILE, FileManager.Extensions.RESETS))
+	end
+
+	return attemptsFilePath
+end
+
+function Main.ReadResetsCount()
+	local filepath = Main.GetResetsFile()
+	local resetsRead = io.open(filepath, "r")
+	if resetsRead ~= nil then
+		local resetsText = resetsRead:read("*a")
+		resetsRead:close()
+		if resetsText ~= nil and tonumber(resetsText) ~=nil then
+			Main.currentSeed = tonumber(resetsText)
+		end
+	end
+end
+
+function Main.WriteResetsCountToFile(filepath, resetsCount)
+	resetsCount = resetsCount or Main.currentSeed
+
+	local resetsWrite = io.open(filepath, "w")
+	if resetsWrite ~= nil then
+		resetsWrite:write(resetsCount)
+		resetsWrite:close()
+	end
 end
 
 -- Get the user settings saved on disk and create the base Settings object; returns true if successfully reads in file

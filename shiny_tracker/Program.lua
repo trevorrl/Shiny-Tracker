@@ -276,8 +276,6 @@ function Program.redraw(forced)
 		if TeamViewArea.isDisplayed() then
 			TeamViewArea.drawScreen()
 		end
-	else
-		MGBA.ScreenUtils.updateTextBuffers()
 	end
 
 	SpriteData.cleanupActiveIcons()
@@ -812,11 +810,6 @@ end
 function Program.updateMapLocation()
 	local newMapId = Memory.readword(GameSettings.gMapHeader + 0x12) -- 0x12: mapLayoutId
 
-	-- If the player is in a new area, auto-lookup for mGBA screen
-	if not Main.IsOnBizhawk() and newMapId ~= Program.GameData.mapId then
-		local isFirstLocation = Program.GameData.mapId == nil or Program.GameData.mapId == 0
-		MGBA.Screens.LookupRoute:setData(newMapId, isFirstLocation)
-	end
 	Program.GameData.mapId = newMapId
 end
 

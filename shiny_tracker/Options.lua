@@ -37,6 +37,7 @@ Options = {
 	["Dev branch updates"] = false,
 	["Welcome message"] = "", -- Default is empty, which will display the GBA Controls
 	["Startup favorites"] = "1,4,7",
+	["Startup Pokemon displayed"] = "None",
 	["Show on new game screen"] = false,
 	["Enable restore points"] = true,
 	["Enable crash recovery"] = true,

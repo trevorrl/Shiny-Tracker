@@ -380,9 +380,6 @@ function Battle.updateTrackedInfo()
 				local abilityOwner = Tracker.getPokemon(battleMon.abilityOwner.slot,battleMon.abilityOwner.isOwn)
 				if abilityOwner ~= nil then
 					Tracker.TrackAbility(abilityOwner.pokemonID, battleMon.ability)
-					if not Main.IsOnBizhawk() then -- currently just mGBA
-						MGBA.Screens.LookupAbility:setData(battleMon.ability, false)
-					end
 				end
 			end
 		end
@@ -432,11 +429,8 @@ function Battle.updateStatStages(pokemon, isOwn, isLeft)
 	end
 end
 
--- If the pokemon doesn't belong to the player, and hasn't been encountered yet, increment
+-- If the pokemon doesn't belong to the player, increment
 function Battle.checkEnemyEncounter(opposingPokemon, battleFlags)
-	if opposingPokemon.hasBeenEncountered then return end
-
-	opposingPokemon.hasBeenEncountered = true
 	Tracker.TrackEncounter(opposingPokemon.pokemonID, Battle.isWildEncounter)
 
 	local battleTerrain = Memory.readword(GameSettings.gBattleTerrain)
@@ -587,16 +581,6 @@ function Battle.checkAbilitiesToTrack()
 	return combatantIndexesToTrack
 end
 
-function Battle.updateLookupInfo()
-	if Main.IsOnBizhawk() then return end -- currently just mGBA
-
-	if not MGBA.Screens.LookupPokemon.manuallySet and Program.Frames.waitToDraw == 0 then -- prevent changing if player manually looked up a Pokémon
-		-- Auto lookup the enemy Pokémon being fought
-		local pokemon = Battle.getViewedPokemon(false) or PokemonData.BlankPokemon
-		MGBA.Screens.LookupPokemon:setData(pokemon.pokemonID, false)
-	end
-end
-
 function Battle.beginNewBattle()
 	if Battle.inBattle then return end
 
@@ -664,10 +648,6 @@ function Battle.beginNewBattle()
 		Tracker.Data.isViewingOwn = not Options["Auto swap to enemy"]
 		Program.removeFrameCounter("AutoswapEnemy")
 	end, false)
-
-	if not Main.IsOnBizhawk() then
-		MGBA.Screens.LookupPokemon.manuallySet = false
-	end
 end
 
 function Battle.endCurrentBattle()
@@ -767,9 +747,6 @@ function Battle.changeOpposingPokemonView(isLeft)
 	if Options["Auto swap to enemy"] then
 		Tracker.Data.isViewingOwn = false
 		Battle.isViewingLeft = isLeft
-		if not Main.IsOnBizhawk() then
-			MGBA.Screens.LookupPokemon.manuallySet = false
-		end
 	end
 
 	Input.StatHighlighter:resetSelectedStat()

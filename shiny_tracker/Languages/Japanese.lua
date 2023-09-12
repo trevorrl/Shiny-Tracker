@@ -163,7 +163,6 @@ ScreenResources{
 		ControlsEraseGameSave = "Erase game save data", -- NEEDS TRANSLATION
 		PromptChooseAPokemonTitle = "ポケモンを選びましょう",
 		PromptChooseAPokemonDesc = "ゲームロード時に表示されるポケモン",
-		PromptChooseAPokemonByAttempt = "Based on attempt #", -- NEEDS TRANSLATION
 		PromptChooseAPokemonByRandom = "Random each time", -- NEEDS TRANSLATION
 		PromptChooseAPokemonNone = "なし",
 		PromptChooseFavoriteTitle = "好きなポケモンを選びましょう",

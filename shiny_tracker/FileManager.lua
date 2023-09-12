@@ -42,6 +42,7 @@ FileManager.Files = {
 FileManager.PostFixes = {
 	AUTOSAVE = "AutoSave",
 	BACKUPSAVE = "BackupSave",
+	RESETS_FILE = "Resets",
 }
 
 FileManager.Extensions = {
@@ -51,8 +52,8 @@ FileManager.Extensions = {
 	TRAINER = ".png",
 	BADGE = ".png",
 	BIZHAWK_SAVESTATE = ".State",
-	MGBA_SAVESTATE = ".ss0", -- ".ss0" through ".ss9" are okay to use
 	LUA_CODE = ".lua",
+	RESETS = ".txt",
 }
 
 FileManager.Urls = {
@@ -90,9 +91,7 @@ FileManager.LuaCode = {
 	{ name = "Battle", filepath = "Battle.lua", },
 	{ name = "Pickle", filepath = "Pickle.lua", },
 	{ name = "Tracker", filepath = "Tracker.lua", },
-	{ name = "MGBA", filepath = "MGBA.lua", },
 	-- Screen files
-	{ name = "MGBADisplay", filepath = "MGBADisplay.lua", },
 	{ name = "TrackerScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "TrackerScreen.lua", },
 	{ name = "InfoScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "InfoScreen.lua", },
 	{ name = "NavigationMenu", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "NavigationMenu.lua", },

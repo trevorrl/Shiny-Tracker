@@ -163,7 +163,6 @@ ScreenResources{
 		ControlsEraseGameSave = "Erase game save data", -- NEEDS TRANSLATION
 		PromptChooseAPokemonTitle = "Choose a Pokémon", -- NEEDS TRANSLATION
 		PromptChooseAPokemonDesc = "Choose a Pokémon to show during startup", -- NEEDS TRANSLATION
-		PromptChooseAPokemonByAttempt = "Based on attempt #", -- NEEDS TRANSLATION
 		PromptChooseAPokemonByRandom = "Random each time", -- NEEDS TRANSLATION
 		PromptChooseAPokemonNone = "None", -- NEEDS TRANSLATION
 	},

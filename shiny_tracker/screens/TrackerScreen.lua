@@ -881,10 +881,15 @@ function TrackerScreen.drawPokemonInfoArea(data)
 	gui.drawRectangle(Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN, Constants.SCREEN.MARGIN + 52, 96, infoBoxHeight, Theme.COLORS["Upper box border"], Theme.COLORS["Upper box background"])
 
 	if Tracker.Data.isViewingOwn and data.p.id ~= 0 then
-		local healsInBagText = "Shiny?"
-		local healsValueText = string.format("%s", data.p.isMonShiny)
-		Drawing.drawText(Constants.SCREEN.WIDTH + 6, 57, healsInBagText, Theme.COLORS["Default text"], shadowcolor)
-		Drawing.drawText(Constants.SCREEN.WIDTH + 6, 68, healsValueText, Theme.COLORS["Default text"], shadowcolor)
+		local isMonShinyText = ""
+		if data.p.isMonShiny then
+			isMonShinyText = "Shiny!!"
+		else
+			isMonShinyText = "Not shiny :("
+		end
+		local numberOfEncounters = string.format("%s Encounters", data.x.encounters)
+		Drawing.drawText(Constants.SCREEN.WIDTH + 6, 57, isMonShinyText, Theme.COLORS["Default text"], shadowcolor)
+		Drawing.drawText(Constants.SCREEN.WIDTH + 6, 68, numberOfEncounters, Theme.COLORS["Default text"], shadowcolor)
 
 		if Options["Track PC Heals"] then
 			-- Auto-tracking PC Heals button

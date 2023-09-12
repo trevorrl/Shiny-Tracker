@@ -145,7 +145,6 @@ function StartupScreen.openChoosePokemonWindow()
 	local form = Utils.createBizhawkForm(Resources.StartupScreen.PromptChooseAPokemonTitle, 330, 145)
 
 	local dropdownOptions = {
-		string.format("-- %s", Resources.StartupScreen.PromptChooseAPokemonByAttempt),
 		string.format("-- %s", Resources.StartupScreen.PromptChooseAPokemonByRandom),
 		string.format("-- %s", Resources.StartupScreen.PromptChooseAPokemonNone),
 	}
@@ -166,7 +165,7 @@ function StartupScreen.openChoosePokemonWindow()
 	if Options["Startup Pokemon displayed"] == Options.StartupIcon.random then
 		initialChoice = dropdownOptions[2]
 	elseif Options["Startup Pokemon displayed"] == Options.StartupIcon.none then
-		initialChoice = dropdownOptions[3]
+		initialChoice = dropdownOptions[1]
 	else
 		initialChoice = PokemonData.Pokemon[Options["Startup Pokemon displayed"] or "1"].name
 	end

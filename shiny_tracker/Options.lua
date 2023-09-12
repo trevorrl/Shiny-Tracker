@@ -66,6 +66,14 @@ Options.IconSetMap = {
 		adjustQuestionMark = true, -- If true, will shift the question mark icon on the RouteInfo screen downward `yOffset` pixels
 	},
 	{
+		name = "Shiny",
+		author = "Trevxor",
+		folder = "pokemonShiny",
+		extension = ".png",
+		yOffset = 0,
+		adjustQuestionMark = true,
+	},
+	{
 		name = "Stadium",
 		author = "AmberCyprian",
 		folder = "pokemonStadium",

@@ -18,7 +18,8 @@ StartupScreen.Buttons = {
 	ResetsCount = {
 		type = Constants.ButtonTypes.NO_BORDER,
 		getText = function(self) return tostring(Main.currentSeed) or Constants.BLANKLINE end,
-		box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 54, Constants.SCREEN.MARGIN + 37, 33, 11 },
+		textSize = 12,
+		box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 45, Constants.SCREEN.MARGIN + 24, 33, 11 },
 		isVisible = function() return Main.currentSeed > 1 end,
 		onClick = function(self) StreamerScreen.openEditResetsWindow() end
 	}
@@ -151,8 +152,7 @@ function StartupScreen.drawScreen()
 		fill = Theme.COLORS["Upper box background"],
 		shadow = Utils.calcShadowColor(Theme.COLORS["Upper box background"]),
 	}
-	local topcolX = topBox.x + 55
-	local textLineY = topBox.y + 1
+	local textLineY = topBox.y + 11
 	local linespacing = Constants.SCREEN.LINESPACING + 1
 
 	-- TOP BORDER BOX
@@ -162,7 +162,7 @@ function StartupScreen.drawScreen()
 	textLineY = textLineY + linespacing
 
 	if StartupScreen.Buttons.ResetsCount.isVisible() then
-		Drawing.drawText(topBox.x + 2, textLineY, Resources.StartupScreen.Resets .. ":", topBox.text, topBox.shadow)
+		Drawing.drawText(topBox.x + 2, textLineY, Resources.StartupScreen.Resets .. ":", topBox.text, topBox.shadow, 12)
 	end
 
 	-- Draw all buttons

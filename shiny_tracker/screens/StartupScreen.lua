@@ -15,76 +15,13 @@ StartupScreen.Buttons = {
 		getIconId = function(self) return self.pokemonID, SpriteData.Types.Walk end,
 		onClick = function(self) StartupScreen.openChoosePokemonWindow() end
 	},
-	UpdateAvailable = {
+	ResetsCount = {
 		type = Constants.ButtonTypes.NO_BORDER,
-		getText = function(self) return Utils.inlineIf(self.newVersionAvailable, "*", "") end,
-		textColor = "Positive text",
-		newVersionAvailable = false,
-		clickableArea = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 54, Constants.SCREEN.MARGIN + 12, 30, 10 },
-		box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 54, Constants.SCREEN.MARGIN + 12, 10, 10 },
-		isVisible = function(self) return self.newVersionAvailable end,
-		updateSelf = function(self)
-			self.newVersionAvailable = not Main.isOnLatestVersion()
-			if self.newVersionAvailable then
-				local offsetX = Utils.calcWordPixelLength(Main.TrackerVersion .. " ")
-				self.box[1] = Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 54 + offsetX
-			end
-		end,
-		onClick = function(self) Program.changeScreenView(UpdateScreen) end
-	},
-	NotesAreaEdit = {
-		type = Constants.ButtonTypes.PIXELIMAGE,
-		image = Constants.PixelImages.NOTEPAD,
-		textColor = "Lower box text",
-		boxColors = { "Lower box border", "Lower box background" },
-		box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 128, Constants.SCREEN.MARGIN + 137, 10, 10 },
-		isVisible = function() return not Options["Show on new game screen"] and Options["Welcome message"] == "" end,
-		onClick = function(self) Program.changeScreenView(StreamerScreen) end
-	},
-	-- EraseGame = { -- Currently unused
-	-- 	type = Constants.ButtonTypes.FULL_BORDER,
-	-- 	getText = function(self) return "< Press" end,
-	-- 	textColor = "Lower box text",
-	-- 	boxColors = { "Lower box border", "Lower box background" },
-	-- 	box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 103, Constants.SCREEN.MARGIN + 135, 33, 11 },
-	-- 	isVisible = function() return false and Options["Welcome message"] == "" end, -- TODO: For now, we aren't using this button
-	-- 	onClick = function(self)
-	-- 		if Main.IsOnBizhawk() then
-	-- 			local joypadButtons = {
-	-- 				Up = true,
-	-- 				B = true,
-	-- 				Select = true,
-	-- 			}
-	-- 			joypad.set(joypadButtons)
-	-- 			Main.frameAdvance()
-	-- 			joypad.set(joypadButtons)
-	-- 		end
-	-- 	end
-	-- },
-	PokemonFavorite1 = {
-		type = Constants.ButtonTypes.POKEMON_ICON,
-		clickableArea = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 8, 90, 32, 44 },
-		box = 			{ Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 8, 86, 32, 32 },
-		isVisible = function(self) return Options["Show on new game screen"] end,
-		getIconId = function(self) return StreamerScreen.Buttons.PokemonFavorite1:getIconId() end,
-		onClick = function(self) StreamerScreen.Buttons.PokemonFavorite1:onClick() end,
-	},
-	PokemonFavorite2 = {
-		type = Constants.ButtonTypes.POKEMON_ICON,
-		clickableArea = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 53, 90, 32, 44 },
-		box = 			{ Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 53, 86, 32, 32 },
-		isVisible = function(self) return Options["Show on new game screen"] end,
-		getIconId = function(self) return StreamerScreen.Buttons.PokemonFavorite2:getIconId() end,
-		onClick = function(self) StreamerScreen.Buttons.PokemonFavorite2:onClick() end,
-	},
-	PokemonFavorite3 = {
-		type = Constants.ButtonTypes.POKEMON_ICON,
-		clickableArea = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 98, 90, 32, 44 },
-		box = 			{ Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 98, 86, 32, 32 },
-		isVisible = function(self) return Options["Show on new game screen"] end,
-		getIconId = function(self) return StreamerScreen.Buttons.PokemonFavorite3:getIconId() end,
-		onClick = function(self) StreamerScreen.Buttons.PokemonFavorite3:onClick() end,
-	},
+		getText = function(self) return tostring(Main.currentSeed) or Constants.BLANKLINE end,
+		box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 54, Constants.SCREEN.MARGIN + 37, 33, 11 },
+		isVisible = function() return Main.currentSeed > 1 end,
+		onClick = function(self) StreamerScreen.openEditResetsWindow() end
+	}
 }
 
 function StartupScreen.initialize()
@@ -208,21 +145,11 @@ function StartupScreen.drawScreen()
 		x = Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN,
 		y = Constants.SCREEN.MARGIN,
 		width = Constants.SCREEN.RIGHT_GAP - (Constants.SCREEN.MARGIN * 2),
-		height = 72,
+		height = Constants.SCREEN.HEIGHT - (Constants.SCREEN.MARGIN * 2),
 		text = Theme.COLORS["Default text"],
 		border = Theme.COLORS["Upper box border"],
 		fill = Theme.COLORS["Upper box background"],
 		shadow = Utils.calcShadowColor(Theme.COLORS["Upper box background"]),
-	}
-	local botBox = {
-		x = topBox.x,
-		y = topBox.y + topBox.height + 12,
-		width = topBox.width,
-		height = Constants.SCREEN.HEIGHT - topBox.height - 22,
-		text = Theme.COLORS["Lower box text"],
-		border = Theme.COLORS["Lower box border"],
-		fill = Theme.COLORS["Lower box background"],
-		shadow = Utils.calcShadowColor(Theme.COLORS["Lower box background"]),
 	}
 	local topcolX = topBox.x + 55
 	local textLineY = topBox.y + 1
@@ -232,122 +159,14 @@ function StartupScreen.drawScreen()
 	gui.defaultTextBackground(topBox.fill)
 	gui.drawRectangle(topBox.x, topBox.y, topBox.width, topBox.height, topBox.border, topBox.fill)
 
-	Drawing.drawText(topBox.x + 2, textLineY, Utils.toUpperUTF8(Resources.StartupScreen.Title), Theme.COLORS["Intermediate text"], topBox.shadow)
 	textLineY = textLineY + linespacing
 
-	Drawing.drawText(topBox.x + 2, textLineY, Resources.StartupScreen.Version .. ":", topBox.text, topBox.shadow)
-	Drawing.drawText(topcolX, textLineY, Main.TrackerVersion, topBox.text, topBox.shadow)
-	textLineY = textLineY + linespacing
-
-	Drawing.drawText(topBox.x + 2, textLineY, Resources.StartupScreen.Game .. ":", topBox.text, topBox.shadow)
-	Drawing.drawText(topcolX, textLineY, GameSettings.versioncolor, topBox.text, topBox.shadow)
-	textLineY = textLineY + linespacing
-
-	textLineY = textLineY + linespacing
-
-	-- Display info about the tracked data notes, except when starting a new game (keep it clean)
-	if Tracker.LoadStatus and Tracker.LoadStatus ~= Tracker.LoadStatusKeys.NEW_GAME then
-		local messageColor
-		if Tracker.LoadStatus == Tracker.LoadStatusKeys.LOAD_SUCCESS then
-			messageColor = Theme.COLORS["Positive text"]
-		elseif Tracker.LoadStatus == Tracker.LoadStatusKeys.ERROR then
-			messageColor = Theme.COLORS["Negative text"]
-		else
-			messageColor = topBox.text
-		end
-
-		local trackerNotesLabel = string.format("%s:", Resources.StartupScreen.TrackedDataMsgLabel or "")
-		Drawing.drawText(topBox.x + 2, textLineY, trackerNotesLabel, topBox.text, topBox.shadow)
-		textLineY = textLineY + linespacing - 2
-		Drawing.drawText(topBox.x + 2, textLineY, Resources.StartupScreen[Tracker.LoadStatus] or "", messageColor, topBox.shadow)
-	end
-
-	-- If Favorites are selected to be shown and no custom welcome message has been written, show game controls by default
-	local showCustomWelcome = Options["Show on new game screen"] or Options["Welcome message"] ~= ""
-
-	-- HEADER DIVIDER
-	if showCustomWelcome then
-		if Options["Show on new game screen"] then
-			local bgShadow = Utils.calcShadowColor(Theme.COLORS["Main background"])
-			Drawing.drawText(botBox.x + 1, botBox.y - 11, Resources.StartupScreen.HeaderFavorites, Theme.COLORS["Header text"], bgShadow)
-		end
-	else
-		local bgShadow = Utils.calcShadowColor(Theme.COLORS["Main background"])
-		Drawing.drawText(botBox.x + 1, botBox.y - 11, Resources.StartupScreen.HeaderControls, Theme.COLORS["Header text"], bgShadow)
-	end
-
-	-- BOTTOM BORDER BOX
-	gui.defaultTextBackground(botBox.fill)
-	gui.drawRectangle(botBox.x, botBox.y, botBox.width, botBox.height, botBox.border, botBox.fill)
-	textLineY = botBox.y + 1
-
-	if showCustomWelcome then
-		textLineY = textLineY + 1
-		if Options["Show on new game screen"] then
-			textLineY = textLineY + 30
-		end
-
-		-- Draw the customized welcome message (editable through the StreamerScreen)
-		local welcomeMsg = Utils.formatSpecialCharacters(Options["Welcome message"])
-		welcomeMsg = Utils.encodeDecodeForSettingsIni(welcomeMsg, false)
-		local lines = {}
-		for line in welcomeMsg:gmatch("[^\r\n]+") do
-			table.insert(lines, line)
-			Drawing.drawText(botBox.x + 2, textLineY, line, botBox.text, botBox.shadow)
-			textLineY = textLineY + Constants.SCREEN.LINESPACING - 1
-		end
-		-- Redraw main background on the right to cut-off excess text overflow
-		gui.drawLine(botBox.x + botBox.width, botBox.y, botBox.x + botBox.width, botBox.y + botBox.height, botBox.border)
-		gui.drawRectangle(botBox.x + botBox.width + 1, botBox.y, Constants.SCREEN.MARGIN, botBox.height, Theme.COLORS["Main background"], Theme.COLORS["Main background"])
-	else
-		-- Draw the GBA pixel image as a black icon against white background
-		local gbaX = botBox.x + 117
-		local gbaY = botBox.y + 2
-		gui.drawRectangle(gbaX - 2, gbaY - 2, 25, 16, botBox.border, Drawing.Colors.WHITE)
-		Drawing.drawImageAsPixels(Constants.PixelImages.GBA, gbaX, gbaY, { Drawing.Colors.BLACK, Drawing.Colors.WHITE })
-
-		local indentChars = "    "
-		local swapFormatted = indentChars .. Options.CONTROLS["Toggle view"]:upper()
-		Drawing.drawText(botBox.x + 2, textLineY, Resources.StartupScreen.ControlsSwapView .. ":", botBox.text, botBox.shadow)
-		textLineY = textLineY + linespacing - 2
-		Drawing.drawText(botBox.x + 2, textLineY, swapFormatted, botBox.text, botBox.shadow)
-		textLineY = textLineY + linespacing - 1
-
-		local comboFormatted = indentChars .. Options.CONTROLS["Load next seed"]:upper():gsub(" ", ""):gsub(",", " + ")
-		Drawing.drawText(botBox.x + 2, textLineY, Resources.StartupScreen.ControlsQuickload .. ":", botBox.text, botBox.shadow)
-		textLineY = textLineY + linespacing - 2
-		Drawing.drawText(botBox.x + 2, textLineY, comboFormatted, botBox.text, botBox.shadow)
-		textLineY = textLineY + linespacing - 1
-
-		local clearFormatted = indentChars .. "UP + B + SELECT"
-		Drawing.drawText(botBox.x + 2, textLineY, Resources.StartupScreen.ControlsEraseGameSave .. ":", botBox.text, botBox.shadow)
-		textLineY = textLineY + linespacing - 2
-		Drawing.drawText(botBox.x + 2, textLineY, clearFormatted, botBox.text, botBox.shadow)
-		textLineY = textLineY + linespacing - 1
-	end
-
-	-- Temporarily vertically center-align the Favorite Pokemon icons if no welcome message
-	local prevYs = {}
-	if Options["Show on new game screen"] and Options["Welcome message"] == "" then
-		prevYs = {
-			StartupScreen.Buttons.PokemonFavorite1.box[2],
-			StartupScreen.Buttons.PokemonFavorite2.box[2],
-			StartupScreen.Buttons.PokemonFavorite3.box[2],
-		}
-		StartupScreen.Buttons.PokemonFavorite1.box[2] = prevYs[1] + 15
-		StartupScreen.Buttons.PokemonFavorite2.box[2] = prevYs[2] + 15
-		StartupScreen.Buttons.PokemonFavorite3.box[2] = prevYs[3] + 15
+	if StartupScreen.Buttons.ResetsCount.isVisible() then
+		Drawing.drawText(topBox.x + 2, textLineY, Resources.StartupScreen.Resets .. ":", topBox.text, topBox.shadow)
 	end
 
 	-- Draw all buttons
 	for _, button in pairs(StartupScreen.Buttons) do
-		local buttonShadow = Utils.inlineIf(button.boxColors[2] == "Upper box background", topBox.shadow, botBox.shadow)
-		Drawing.drawButton(button, buttonShadow)
-	end
-
-	if Options["Show on new game screen"] and Options["Welcome message"] == "" then
-		StartupScreen.Buttons.PokemonFavorite1.box[2] = prevYs[1]
-		StartupScreen.Buttons.PokemonFavorite2.box[2] = prevYs[2]
-		StartupScreen.Buttons.PokemonFavorite3.box[2] = prevYs[3]
+		Drawing.drawButton(button, topBox.shadow)
 	end
 end

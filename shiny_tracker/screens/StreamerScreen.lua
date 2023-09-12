@@ -10,6 +10,17 @@ StreamerScreen = {
 }
 
 StreamerScreen.Buttons = {
+	ResetsCountEdit = {
+		type = Constants.ButtonTypes.FULL_BORDER,
+		getText = function(self) return Resources.StreamerScreen.ButtonEdit end,
+		box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 112, Constants.SCREEN.MARGIN + 14, 23, 11 },
+		draw = function(self, shadowcolor)
+			local x = Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 3
+			local y = self.box[2]
+			Drawing.drawText(x, y, Resources.StreamerScreen.LabelResetsCount .. ":", Theme.COLORS[self.textColor], shadowcolor)
+		end,
+		onClick = function(self) StreamerScreen.openEditResetsWindow() end,
+	},
 	WelcomeMessageEdit = {
 		type = Constants.ButtonTypes.FULL_BORDER,
 		getText = function(self) return Resources.StreamerScreen.ButtonEdit end,
@@ -84,6 +95,28 @@ function StreamerScreen.initialize()
 	StreamerScreen.Buttons.ShowFavorites.toggleState = Options["Show on new game screen"] or false
 
 	StreamerScreen.loadFavorites()
+end
+
+function StreamerScreen.openEditResetsWindow()
+	local form = Utils.createBizhawkForm(Resources.StreamerScreen.PromptEditResetsTitle, 320, 130)
+
+	forms.label(form, Resources.StreamerScreen.PromptEditResetsDesc, 48, 10, 300, 20)
+	local textBox = forms.textbox(form, Main.currentSeed, 200, 30, "UNSIGNED", 50, 30)
+	forms.button(form, Resources.AllScreens.Save, function()
+		local formInput = forms.gettext(textBox)
+		if formInput ~= nil and formInput ~= "" then
+			local newResetsCount = tonumber(formInput)
+			if newResetsCount ~= nil and Main.currentSeed ~= newResetsCount then
+				Main.currentSeed = newResetsCount
+				Main.WriteResetsCountToFile(Main.GetResetsFile(), newResetsCount)
+				Program.redraw(true)
+			end
+		end
+		Utils.closeBizhawkForm(form)
+	end, 72, 60)
+	forms.button(form, Resources.AllScreens.Cancel, function()
+		Utils.closeBizhawkForm(form)
+	end, 157, 60)
 end
 
 function StreamerScreen.openEditWelcomeMessageWindow()

@@ -446,14 +446,14 @@ end
 function Main.GetResetsFile()
 	local romName = GameSettings.getRomName() or ""
 	local romPrefix = string.match(romName, '[^0-9]+') or ""
-	local attemptsFileName = string.format("%s %s%s", romPrefix, FileManager.PostFixes.RESETS_FILE, FileManager.Extensions.RESETS)
-	local attemptsFilePath = FileManager.getPathIfExists(attemptsFileName)
+	local resetsFileName = string.format("%s %s%s", romPrefix, FileManager.PostFixes.RESETS_FILE, FileManager.Extensions.RESETS)
+	local resetsFilePath = FileManager.getPathIfExists(resetsFileName)
 
-	if attemptsFilePath == nil then
-		attemptsFilePath = FileManager.prependDir(string.format("%s %s%s", romPrefix, FileManager.PostFixes.RESETS_FILE, FileManager.Extensions.RESETS))
+	if resetsFilePath == nil then
+		resetsFilePath = FileManager.prependDir(string.format("%s %s%s", romPrefix, FileManager.PostFixes.RESETS_FILE, FileManager.Extensions.RESETS))
 	end
 
-	return attemptsFilePath
+	return resetsFilePath
 end
 
 function Main.ReadResetsCount()

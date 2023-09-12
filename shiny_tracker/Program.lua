@@ -823,6 +823,9 @@ function Program.HandleExit()
 		return
 	end
 
+	Main.currentSeed = Main.currentSeed + 1
+	Main.WriteResetsCountToFile(Main.GetResetsFile())
+
 	gui.clearImageCache()
 	Drawing.clearGUI()
 	client.SetGameExtraPadding(0, 0, 0, 0)

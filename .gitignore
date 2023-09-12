@@ -6,6 +6,7 @@ Settings.ini
 *.ss[0-9]
 *.log
 *Attempts.txt
+*Resets.txt
 quickload/*.jar
 quickload/*.rnqs
 extensions/*

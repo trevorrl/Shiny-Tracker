@@ -10,7 +10,7 @@ StartupScreen.Buttons = {
 	PokemonIcon = {
 		type = Constants.ButtonTypes.POKEMON_ICON,
 		clickableArea = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 100, Constants.SCREEN.MARGIN + 14, 31, 28 },
-		box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 40, Constants.SCREEN.MARGIN + 10, 64, 64 },
+		box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 40, Constants.SCREEN.MARGIN + 0, 64, 64 },
 		pokemonID = 0,
 		getIconId = function(self) return self.pokemonID, SpriteData.Types.Walk end,
 		onClick = function(self) StartupScreen.openChoosePokemonWindow() end
@@ -19,7 +19,7 @@ StartupScreen.Buttons = {
 		type = Constants.ButtonTypes.NO_BORDER,
 		getText = function(self) return tostring(Main.currentSeed) or Constants.BLANKLINE end,
 		textSize = 24,
-		box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 45, Constants.SCREEN.MARGIN + 60, 33, 11 },
+		box = { Constants.SCREEN.WIDTH + Constants.SCREEN.MARGIN + 45, Constants.SCREEN.MARGIN + 50, 33, 11 },
 		isVisible = function() return Main.currentSeed > 1 end,
 		onClick = function(self) StreamerScreen.openEditResetsWindow() end
 	}

@@ -240,7 +240,7 @@ function Program.mainLoop()
 		return
 	end
 	Input.checkForInput()
-	Program.update()
+	-- Program.update()
 	Battle.update()
 	Program.redraw(false)
 	Program.stepFrames() -- TODO: Really want a better way to handle this
@@ -308,122 +308,122 @@ function Program.destroyActiveForm()
 	end
 end
 
-function Program.update()
-	-- Be careful adding too many things to this 10 frame update
-	if Program.Frames.highAccuracyUpdate == 0 then
-		if Main.IsOnBizhawk() then
-			Program.clientFpsMultiplier = math.max(client.get_approx_framerate() / 60, 1) -- minimum of 1
-		end
+-- function Program.update()
+-- 	-- Be careful adding too many things to this 10 frame update
+-- 	if Program.Frames.highAccuracyUpdate == 0 then
+-- 		if Main.IsOnBizhawk() then
+-- 			Program.clientFpsMultiplier = math.max(client.get_approx_framerate() / 60, 1) -- minimum of 1
+-- 		end
 
-		Program.updateMapLocation() -- trying this here to solve many future problems
+-- 		Program.updateMapLocation() -- trying this here to solve many future problems
 
-		if not Program.GameTimer.hasStarted and Program.isValidMapLocation() then
-			Program.GameTimer:start()
-		end
-		Program.GameTimer:update()
-		if not CrashRecoveryScreen.started and Program.isValidMapLocation() then
-			CrashRecoveryScreen.startSavingBackups()
-		end
+-- 		if not Program.GameTimer.hasStarted and Program.isValidMapLocation() then
+-- 			Program.GameTimer:start()
+-- 		end
+-- 		Program.GameTimer:update()
+-- 		if not CrashRecoveryScreen.started and Program.isValidMapLocation() then
+-- 			CrashRecoveryScreen.startSavingBackups()
+-- 		end
 
-		-- If the lead Pokemon changes, then update the animated Pokemon picture box
-		if Options["Animated Pokemon popout"] then
-			local leadPokemon = Tracker.getPokemon(Battle.Combatants.LeftOwn, true)
-			if leadPokemon ~= nil and leadPokemon.pokemonID ~= 0 and Program.isValidMapLocation() then
-				if leadPokemon.pokemonID ~= Drawing.AnimatedPokemon.pokemonID then
-					Drawing.AnimatedPokemon:setPokemon(leadPokemon.pokemonID)
-				elseif Drawing.AnimatedPokemon.requiresRelocating then
-					Drawing.AnimatedPokemon:relocatePokemon()
-				end
-			end
-		end
-	end
+-- 		-- If the lead Pokemon changes, then update the animated Pokemon picture box
+-- 		if Options["Animated Pokemon popout"] then
+-- 			local leadPokemon = Tracker.getPokemon(Battle.Combatants.LeftOwn, true)
+-- 			if leadPokemon ~= nil and leadPokemon.pokemonID ~= 0 and Program.isValidMapLocation() then
+-- 				if leadPokemon.pokemonID ~= Drawing.AnimatedPokemon.pokemonID then
+-- 					Drawing.AnimatedPokemon:setPokemon(leadPokemon.pokemonID)
+-- 				elseif Drawing.AnimatedPokemon.requiresRelocating then
+-- 					Drawing.AnimatedPokemon:relocatePokemon()
+-- 				end
+-- 			end
+-- 		end
+-- 	end
 
-	-- Don't bother reading game data before a game even begins
-	if not Program.isValidMapLocation() then
-		return
-	end
+-- 	-- Don't bother reading game data before a game even begins
+-- 	if not Program.isValidMapLocation() then
+-- 		return
+-- 	end
 
-	-- Get any "new" information from game memory for player's pokemon team every half second (60 frames/sec)
-	if Program.Frames.lowAccuracyUpdate == 0 then
-		Program.updateCatchingTutorial()
+-- 	-- Get any "new" information from game memory for player's pokemon team every half second (60 frames/sec)
+-- 	if Program.Frames.lowAccuracyUpdate == 0 then
+-- 		Program.updateCatchingTutorial()
 
-		if not Program.inCatchingTutorial and not Program.isInEvolutionScene() then
-			Program.updatePokemonTeams()
-			TeamViewArea.buildOutPartyScreen()
+-- 		if not Program.inCatchingTutorial and not Program.isInEvolutionScene() then
+-- 			Program.updatePokemonTeams()
+-- 			TeamViewArea.buildOutPartyScreen()
 
-			if Program.isValidMapLocation() then
-				if Program.currentScreen == StartupScreen then
-					-- If the game hasn't started yet, show the start-up screen instead of the main Tracker screen
-					Program.currentScreen = TrackerScreen
-				elseif RouteData.Locations.IsInHallOfFame[Program.GameData.mapId] and not GameOverScreen.enteredFromSpecialLocation then
-					GameOverScreen.enteredFromSpecialLocation = true
-					Program.currentScreen = GameOverScreen
-				end
-			elseif GameOverScreen.enteredFromSpecialLocation then
-				GameOverScreen.enteredFromSpecialLocation = false
-			end
+-- 			if Program.isValidMapLocation() then
+-- 				if Program.currentScreen == StartupScreen then
+-- 					-- If the game hasn't started yet, show the start-up screen instead of the main Tracker screen
+-- 					Program.currentScreen = TrackerScreen
+-- 				elseif RouteData.Locations.IsInHallOfFame[Program.GameData.mapId] and not GameOverScreen.enteredFromSpecialLocation then
+-- 					GameOverScreen.enteredFromSpecialLocation = true
+-- 					Program.currentScreen = GameOverScreen
+-- 				end
+-- 			elseif GameOverScreen.enteredFromSpecialLocation then
+-- 				GameOverScreen.enteredFromSpecialLocation = false
+-- 			end
 
-			-- Check if summary screen has being shown
-			if not Tracker.Data.hasCheckedSummary then
-				if Memory.readbyte(GameSettings.sMonSummaryScreen) ~= 0 then
-					Tracker.Data.hasCheckedSummary = true
-				end
-			end
+-- 			-- Check if summary screen has being shown
+-- 			if not Tracker.Data.hasCheckedSummary then
+-- 				if Memory.readbyte(GameSettings.sMonSummaryScreen) ~= 0 then
+-- 					Tracker.Data.hasCheckedSummary = true
+-- 				end
+-- 			end
 
-			-- Check if a Pokemon in the player's party is learning a move, if so track it
-			local learnedInfoTable = Program.getLearnedMoveInfoTable()
-			if learnedInfoTable.pokemonID ~= nil then
-				Tracker.TrackMove(learnedInfoTable.pokemonID, learnedInfoTable.moveId, learnedInfoTable.level)
-			end
+-- 			-- Check if a Pokemon in the player's party is learning a move, if so track it
+-- 			local learnedInfoTable = Program.getLearnedMoveInfoTable()
+-- 			if learnedInfoTable.pokemonID ~= nil then
+-- 				Tracker.TrackMove(learnedInfoTable.pokemonID, learnedInfoTable.moveId, learnedInfoTable.level)
+-- 			end
 
-			if Options["Display repel usage"] and not (Battle.inBattle or Battle.battleStarting) then
-				-- Check if the player is in the start menu (for hiding the repel usage icon)
-				Program.inStartMenu = Program.isInStartMenu()
-				-- Check for active repel and steps remaining
-				if not Program.inStartMenu then
-					Program.updateRepelSteps()
-				end
-			end
+-- 			if Options["Display repel usage"] and not (Battle.inBattle or Battle.battleStarting) then
+-- 				-- Check if the player is in the start menu (for hiding the repel usage icon)
+-- 				Program.inStartMenu = Program.isInStartMenu()
+-- 				-- Check for active repel and steps remaining
+-- 				if not Program.inStartMenu then
+-- 					Program.updateRepelSteps()
+-- 				end
+-- 			end
 
-			-- Update step count only if the option is enabled
-			if Program.Pedometer:isInUse() then
-				Program.Pedometer.totalSteps = Utils.getGameStat(Constants.GAME_STATS.STEPS)
-			end
+-- 			-- Update step count only if the option is enabled
+-- 			if Program.Pedometer:isInUse() then
+-- 				Program.Pedometer.totalSteps = Utils.getGameStat(Constants.GAME_STATS.STEPS)
+-- 			end
 
-			Program.AutoSaver:checkForNextSave()
-			TimeMachineScreen.checkCreatingRestorePoint()
-		end
+-- 			Program.AutoSaver:checkForNextSave()
+-- 			TimeMachineScreen.checkCreatingRestorePoint()
+-- 		end
 
-		if Input.joypadUsedRecently then
-			Program.lastActiveTimestamp = os.time()
-			SpriteData.checkForIdleSleeping(0)
-		end
-	end
+-- 		if Input.joypadUsedRecently then
+-- 			Program.lastActiveTimestamp = os.time()
+-- 			SpriteData.checkForIdleSleeping(0)
+-- 		end
+-- 	end
 
-	-- Only update "Heals in Bag", Evolution Stones, "PC Heals", and "Badge Data" info every 3 seconds (3 seconds * 60 frames/sec)
-	if Program.Frames.three_sec_update == 0 then
-		Program.updateBagItems()
-		Program.updatePCHeals()
-		Program.updateBadgesObtained()
-		CrashRecoveryScreen.trySaveBackup()
+-- 	-- Only update "Heals in Bag", Evolution Stones, "PC Heals", and "Badge Data" info every 3 seconds (3 seconds * 60 frames/sec)
+-- 	if Program.Frames.three_sec_update == 0 then
+-- 		Program.updateBagItems()
+-- 		Program.updatePCHeals()
+-- 		Program.updateBadgesObtained()
+-- 		CrashRecoveryScreen.trySaveBackup()
 
-		if not Input.joypadUsedRecently then
-			local secondsSinceLastActive = math.max(os.time() - Program.lastActiveTimestamp, 0)
-			SpriteData.checkForIdleSleeping(secondsSinceLastActive)
-		else
-			-- Reset the joypad button tracking, checking only once every 3 seconds if active
-			Input.joypadUsedRecently = false
-		end
-	end
+-- 		if not Input.joypadUsedRecently then
+-- 			local secondsSinceLastActive = math.max(os.time() - Program.lastActiveTimestamp, 0)
+-- 			SpriteData.checkForIdleSleeping(secondsSinceLastActive)
+-- 		else
+-- 			-- Reset the joypad button tracking, checking only once every 3 seconds if active
+-- 			Input.joypadUsedRecently = false
+-- 		end
+-- 	end
 
-	-- Only save tracker data every 1 minute (60 seconds * 60 frames/sec) and after every battle (set elsewhere)
-	if Program.Frames.saveData == 0 then
-		-- Don't bother saving tracked data if the player doesn't have a Pokemon yet
-		if Options["Auto save tracked game data"] and Tracker.getPokemon(1, true) ~= nil then
-			Tracker.saveData()
-		end
-	end
-end
+-- 	-- Only save tracker data every 1 minute (60 seconds * 60 frames/sec) and after every battle (set elsewhere)
+-- 	if Program.Frames.saveData == 0 then
+-- 		-- Don't bother saving tracked data if the player doesn't have a Pokemon yet
+-- 		if Options["Auto save tracked game data"] and Tracker.getPokemon(1, true) ~= nil then
+-- 			Tracker.saveData()
+-- 		end
+-- 	end
+-- end
 
 function Program.stepFrames()
 	Program.Frames.highAccuracyUpdate = (Program.Frames.highAccuracyUpdate - 1) % 10
@@ -826,10 +826,10 @@ function Program.HandleExit()
 	Main.currentSeed = Main.currentSeed + 1
 	Main.WriteResetsCountToFile(Main.GetResetsFile())
 
-	gui.clearImageCache()
-	Drawing.clearGUI()
-	client.SetGameExtraPadding(0, 0, 0, 0)
-	forms.destroyall()
+	-- gui.clearImageCache()
+	-- Drawing.clearGUI()
+	-- client.SetGameExtraPadding(0, 0, 0, 0)
+	-- forms.destroyall()
 
 	-- Emulator is closing as expected; no crash
 	CrashRecoveryScreen.logCrashReport(false)

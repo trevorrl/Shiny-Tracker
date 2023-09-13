@@ -826,10 +826,10 @@ function Program.HandleExit()
 	Main.currentSeed = Main.currentSeed + 1
 	Main.WriteResetsCountToFile(Main.GetResetsFile())
 
-	-- gui.clearImageCache()
-	-- Drawing.clearGUI()
-	-- client.SetGameExtraPadding(0, 0, 0, 0)
-	-- forms.destroyall()
+	gui.clearImageCache()
+	Drawing.clearGUI()
+	client.SetGameExtraPadding(0, 0, 0, 0)
+	forms.destroyall()
 
 	-- Emulator is closing as expected; no crash
 	CrashRecoveryScreen.logCrashReport(false)

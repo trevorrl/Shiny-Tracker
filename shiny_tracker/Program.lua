@@ -240,7 +240,7 @@ function Program.mainLoop()
 		return
 	end
 	Input.checkForInput()
-	-- Program.update()
+	Program.update()
 	Battle.update()
 	Program.redraw(false)
 	Program.stepFrames() -- TODO: Really want a better way to handle this

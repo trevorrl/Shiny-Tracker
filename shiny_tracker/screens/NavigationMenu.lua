@@ -93,6 +93,13 @@ NavigationMenu.Buttons = {
 		isVisible = function() return not NavigationMenu.showCredits end,
 		onClick = function() Program.changeScreenView(StreamerScreen) end
 	},
+	SoftResetTracker = {
+		getText = function(self) return Resources.NavigationMenu.ButtonSoftResets end,
+		image = Constants.PixelImages.SPARKLES,
+		index = 9,
+		isVisible = function() return not NavigationMenu.showCredits end,
+		onClick = function() Program.changeScreenView(SoftResetScreen) end
+	},
 	MirageButton = {
 		getText = function(self)
 			if GameSettings.game == 3 then

@@ -96,6 +96,7 @@ FileManager.LuaCode = {
 	{ name = "InfoScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "InfoScreen.lua", },
 	{ name = "NavigationMenu", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "NavigationMenu.lua", },
 	{ name = "StartupScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "StartupScreen.lua", },
+	{ name = "SoftResetScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "SoftResetScreen.lua", },
 	{ name = "UpdateScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "UpdateScreen.lua", },
 	{ name = "SetupScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "SetupScreen.lua", },
 	{ name = "ExtrasScreen", filepath = FileManager.Folders.ScreensCode .. FileManager.slash .. "ExtrasScreen.lua", },

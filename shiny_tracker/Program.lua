@@ -823,6 +823,7 @@ function Program.HandleExit()
 		return
 	end
 
+	Utils.tempDisableBizhawkSound()
 	Main.currentSeed = Main.currentSeed + 1
 	Main.WriteResetsCountToFile(Main.GetResetsFile())
 
@@ -833,6 +834,7 @@ function Program.HandleExit()
 
 	-- Emulator is closing as expected; no crash
 	CrashRecoveryScreen.logCrashReport(false)
+	Utils.tempEnableBizhawkSound()
 end
 
 -- Returns focus back to Bizhawk, using the name of the rom as the name of the Bizhawk window

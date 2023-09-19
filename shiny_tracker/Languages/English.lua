@@ -173,7 +173,7 @@ ScreenResources{
 		ButtonGameplay = "Gameplay",
 		ButtonTheme = "Theme",
 		ButtonStreaming = "Streaming",
-		ButtonSoftResets = "SR Tracker",
+		ButtonSoftResets = "Soft Resets",
 		ButtonExtras = "Extras",
 		ButtonQuickload = "Quickload",
 		ButtonLanguage = "Language",

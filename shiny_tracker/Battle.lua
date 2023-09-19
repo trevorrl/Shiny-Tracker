@@ -137,7 +137,6 @@ end
 -- Updates once every [30] frames.
 function Battle.updateLowAccuracy()
 	Battle.updateTrackedInfo()
-	Battle.updateLookupInfo()
 end
 
 -- Returns true if the player is allowed to view the enemy Pokémon
